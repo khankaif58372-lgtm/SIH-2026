@@ -6,20 +6,7 @@ import { LandingNav } from '../../components/navigation/LandingNav'
 import { LandingCanvas } from '../../components/cinematic/LandingCanvas'
 import { useAppStore } from '../../store/useAppStore'
 import type { UserRole } from '../../types'
-
-const INDIC_SCRIPTS = [
-  { script: 'हिन्दी', name: 'Hindi' },
-  { script: 'मराठी', name: 'Marathi' },
-  { script: 'বাংলা', name: 'Bengali' },
-  { script: 'தமிழ்', name: 'Tamil' },
-  { script: 'తెలుగు', name: 'Telugu' },
-  { script: 'ಕನ್ನಡ', name: 'Kannada' },
-  { script: 'മലയാളം', name: 'Malayalam' },
-  { script: 'ગુજરાતી', name: 'Gujarati' },
-  { script: 'ਪੰਜਾਬੀ', name: 'Punjabi' },
-  { script: 'ଓଡ଼ିଆ', name: 'Odia' },
-  { script: 'कुड़ुख', name: 'Kurukh' },
-]
+import { LANGUAGES } from '../../data/languages'
 
 export function SingleLandingPage() {
   const navigate = useNavigate()
@@ -570,19 +557,24 @@ export function SingleLandingPage() {
                 Multilingual Identity
               </span>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                {INDIC_SCRIPTS.map((item) => (
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
+                {LANGUAGES.map((item) => (
                   <div
-                    key={item.name}
-                    className={`px-4 py-2 rounded-2xl border text-sm sm:text-base font-medium theme-transition ${
+                    key={item.id}
+                    className={`px-4 py-2.5 rounded-2xl border text-sm font-medium theme-transition flex flex-col items-center ${
                       isDarkMode
                         ? 'bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] text-[#F5F5F5]'
                         : 'bg-[#FAFAF8] border-black/[0.05] hover:border-black/15 shadow-subtle text-[#171717]'
                     }`}
                   >
-                    <span className="font-bold mr-1.5">{item.script}</span>
-                    <span className={`text-xs ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                      {item.name}
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-cyan-600 dark:text-cyan-400">{item.nativeName}</span>
+                      <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        ({item.name})
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-[#A3A39E] font-normal mt-0.5 max-w-[180px] text-center truncate">
+                      {item.regions.join(', ')}
                     </span>
                   </div>
                 ))}

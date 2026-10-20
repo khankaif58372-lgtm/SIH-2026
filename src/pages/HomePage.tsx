@@ -80,10 +80,10 @@ export function HomePage() {
               </div>
               <h3 className="text-lg font-bold text-white mb-2">Regional Mother Tongue</h3>
               <p className="text-secondary leading-relaxed text-slate-300">
-                11 official Indian languages supported with authentic regional scripts, natural phrasing, and culturally tuned metaphors.
+                10 regional and tribal Indian languages + foundational Hindi & English with verified Census regions, native scripts, and dialect fidelity.
               </p>
               <div className="mt-4 pt-4 border-t border-white/[0.06] text-xs font-medium text-cyan-400">
-                Hindi · Bengali · Tamil · Telugu · Marathi + 6 more
+                Santali · Kurukh · Bhili · Bhilodi · Gondi · Kui + 6 more
               </div>
             </GlassCard>
 

@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, BookOpen, Clock, FileText, Download, Sparkles, CheckCircle2, Globe, Volume2, VolumeX, AlertCircle } from 'lucide-react'
+import { ArrowLeft, BookOpen, Clock, FileText, Download, Sparkles, CheckCircle2, Globe, Volume2, VolumeX, AlertCircle, Loader2 } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
-import { Lesson } from '../../types/lesson'
+import { Lesson, LessonTranslation } from '../../types/lesson'
+import { LANGUAGES, getLanguageById } from '../../data/languages'
+import { speechService } from '../../services/speech'
+import { translateTextAuto } from '../../services/translator'
 
 interface LessonViewProps {
   lesson: Lesson
@@ -15,40 +18,95 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
   const { isDarkMode } = useAppStore()
 
   // Language selection state: English ('en') by default
-  const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'kru'>('en')
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en')
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [ttsNotice, setTtsNotice] = useState<string | null>(null)
+  const [isTranslatingOnFly, setIsTranslatingOnFly] = useState(false)
+  const [dynamicTranslations, setDynamicTranslations] = useState<Record<string, LessonTranslation>>({})
+
+  const selectedLangObj = getLanguageById(selectedLanguage) || LANGUAGES[0]
 
   // Derive active content based on selected language
   const activeTranslation = useMemo(() => {
-    if (selectedLanguage === 'kru') {
-      const kruData = lesson.translations?.kru
-      if (kruData && kruData.title && kruData.content) {
-        return {
-          title: kruData.title,
-          description: kruData.description || '',
-          content: kruData.content,
-          isAvailable: true,
-        }
-      }
+    // 1. English
+    if (selectedLanguage === 'en') {
       return {
         title: lesson.translations?.en?.title || lesson.title,
         description: lesson.translations?.en?.description || lesson.description,
         content: lesson.translations?.en?.content || lesson.content,
-        isAvailable: false,
+        isAvailable: true,
       }
     }
 
-    // Default: English
+    // 2. Pre-saved translation in lesson
+    const saved = lesson.translations?.[selectedLanguage]
+    if (saved && saved.title && saved.content) {
+      return {
+        title: saved.title,
+        description: saved.description || '',
+        content: saved.content,
+        isAvailable: true,
+      }
+    }
+
+    // 3. Dynamically generated translation during session
+    const dynamic = dynamicTranslations[selectedLanguage]
+    if (dynamic) {
+      return {
+        title: dynamic.title,
+        description: dynamic.description || '',
+        content: dynamic.content,
+        isAvailable: true,
+      }
+    }
+
+    // 4. Unavailable for this language
     return {
       title: lesson.translations?.en?.title || lesson.title,
       description: lesson.translations?.en?.description || lesson.description,
       content: lesson.translations?.en?.content || lesson.content,
-      isAvailable: true,
+      isAvailable: false,
     }
-  }, [selectedLanguage, lesson])
+  }, [selectedLanguage, lesson, dynamicTranslations])
 
-  // Handle Text-To-Speech
+  // Handle on-the-fly translation generation
+  const handleGenerateTranslation = async () => {
+    setIsTranslatingOnFly(true)
+    try {
+      const titleRes = await translateTextAuto({
+        text: lesson.title,
+        sourceLanguageId: 'en',
+        targetLanguageId: selectedLanguage,
+      })
+      const descRes = lesson.description
+        ? await translateTextAuto({
+            text: lesson.description,
+            sourceLanguageId: 'en',
+            targetLanguageId: selectedLanguage,
+          })
+        : ''
+      const contentRes = await translateTextAuto({
+        text: lesson.content,
+        sourceLanguageId: 'en',
+        targetLanguageId: selectedLanguage,
+      })
+
+      setDynamicTranslations((prev) => ({
+        ...prev,
+        [selectedLanguage]: {
+          title: titleRes,
+          description: descRes,
+          content: contentRes,
+        },
+      }))
+    } catch (err) {
+      console.error('Failed to translate lesson on the fly:', err)
+    } finally {
+      setIsTranslatingOnFly(false)
+    }
+  }
+
+  // Handle Text-To-Speech with honest voice check
   const handleToggleTTS = () => {
     if (!('speechSynthesis' in window)) {
       setTtsNotice('Text-to-Speech is not supported in your browser.')
@@ -57,37 +115,36 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
     }
 
     if (isSpeaking) {
-      window.speechSynthesis.cancel()
+      speechService.stopSpeaking()
       setIsSpeaking(false)
       return
     }
 
-    if (selectedLanguage === 'kru') {
-      const voices = window.speechSynthesis.getVoices()
-      const kruVoice = voices.find(
-        (v) => v.lang.toLowerCase().includes('kru') || v.name.toLowerCase().includes('kurukh')
+    const hasVoice = speechService.hasVoiceForLocale(selectedLangObj.locale)
+    if (!hasVoice && selectedLanguage !== 'en' && selectedLanguage !== 'hi') {
+      setTtsNotice(
+        `Device voice for ${selectedLangObj.name} is not installed on this system. Displaying verified written text in ${selectedLangObj.script}.`
       )
-      if (!kruVoice) {
-        setTtsNotice('Kurukh speech synthesis is not supported on your browser/device. Displaying written Kurukh text.')
-        setTimeout(() => setTtsNotice(null), 4000)
-        return
-      }
+      setTimeout(() => setTtsNotice(null), 6000)
+      return
     }
 
     const textToSpeak = `${activeTranslation.title}. ${activeTranslation.description}. ${activeTranslation.content.replace(/[#*-]/g, '')}`
-    const utterance = new SpeechSynthesisUtterance(textToSpeak)
-
-    if (selectedLanguage === 'en') {
-      const voices = window.speechSynthesis.getVoices()
-      const enVoice = voices.find((v) => v.lang.startsWith('en'))
-      if (enVoice) utterance.voice = enVoice
-    }
-
-    utterance.onend = () => setIsSpeaking(false)
-    utterance.onerror = () => setIsSpeaking(false)
-
     setIsSpeaking(true)
-    window.speechSynthesis.speak(utterance)
+
+    speechService
+      .speak(textToSpeak, selectedLangObj.locale)
+      .then((res) => {
+        if (!res.hasNativeVoice && selectedLanguage !== 'en' && selectedLanguage !== 'hi') {
+          setTtsNotice(
+            `Device voice for ${selectedLangObj.name} is unavailable. Audio synthesis suppressed to avoid mismatched voice.`
+          )
+          setTimeout(() => setTtsNotice(null), 5000)
+        }
+      })
+      .finally(() => {
+        setIsSpeaking(false)
+      })
   }
 
   // Format content paragraphs and headers nicely
@@ -99,39 +156,39 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
 
       if (trimmed.startsWith('### ')) {
         return (
-          <h3 key={idx} className="font-display text-lg font-bold mt-5 mb-2 text-[#171717] dark:text-[#F5F5F5]">
+          <h3 key={idx} className="font-display text-base font-bold text-cyan-600 dark:text-cyan-400 mt-4 mb-2">
             {trimmed.replace('### ', '')}
           </h3>
         )
       }
-      if (trimmed.startsWith('## ')) {
-        return (
-          <h2 key={idx} className="font-display text-xl font-extrabold mt-6 mb-3 text-[#171717] dark:text-[#F5F5F5]">
-            {trimmed.replace('## ', '')}
-          </h2>
-        )
-      }
+
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-        const itemText = trimmed.substring(2)
-        const parts = itemText.split('**')
         return (
-          <li key={idx} className="flex items-start gap-2.5 my-1.5 ml-1 text-sm text-[#404040] dark:text-[#D4D4D4] leading-relaxed">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0" />
-            <span>
-              {parts.map((part, pIdx) =>
-                pIdx % 2 === 1 ? <strong key={pIdx} className="font-bold text-[#171717] dark:text-white">{part}</strong> : part
-              )}
-            </span>
+          <li key={idx} className="text-sm text-[#525252] dark:text-[#A3A39E] ml-4 list-disc my-1 leading-relaxed">
+            {trimmed.substring(2)}
           </li>
         )
       }
 
-      // Check for bold text formatting like **text**
+      if (/^\d+\.\s/.test(trimmed)) {
+        return (
+          <li key={idx} className="text-sm text-[#525252] dark:text-[#A3A39E] ml-4 list-decimal my-1 leading-relaxed">
+            {trimmed.replace(/^\d+\.\s/, '')}
+          </li>
+        )
+      }
+
       const parts = trimmed.split('**')
       return (
         <p key={idx} className="text-sm leading-relaxed text-[#404040] dark:text-[#D4D4D4] my-2">
           {parts.map((part, pIdx) =>
-            pIdx % 2 === 1 ? <strong key={pIdx} className="font-bold text-[#171717] dark:text-white">{part}</strong> : part
+            pIdx % 2 === 1 ? (
+              <strong key={pIdx} className="font-bold text-[#171717] dark:text-white">
+                {part}
+              </strong>
+            ) : (
+              part
+            )
           )}
         </p>
       )
@@ -169,23 +226,22 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
             </span>
             <select
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value as 'en' | 'kru')}
-              className="bg-transparent text-xs font-bold text-[#171717] dark:text-white outline-none cursor-pointer focus:ring-0"
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="bg-transparent text-xs font-bold text-[#171717] dark:text-white outline-none cursor-pointer focus:ring-0 max-w-[220px]"
               aria-label="Select lesson language"
             >
-              <option value="en" className="dark:bg-[#141418] text-black dark:text-white font-medium">
-                English
-              </option>
-              <option value="kru" className="dark:bg-[#141418] text-black dark:text-white font-medium">
-                Kurukh
-              </option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white font-medium">
+                  {lang.name} ({lang.nativeName})
+                </option>
+              ))}
             </select>
           </div>
 
           {/* ── TTS Audio Button ── */}
           <button
             onClick={handleToggleTTS}
-            title={isSpeaking ? 'Stop Audio' : 'Listen to Lesson Audio'}
+            title={isSpeaking ? 'Stop Audio' : `Listen to Lesson Audio in ${selectedLangObj.name}`}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
               isSpeaking
                 ? 'bg-cyan-500 text-white border-cyan-400 animate-pulse'
@@ -211,32 +267,56 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
         </div>
       </div>
 
+      {/* ── Selected Language & Regional Info Banner ── */}
+      <div className="mb-4 px-4 py-2.5 rounded-2xl border text-xs flex flex-wrap items-center justify-between gap-2 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.06] dark:border-white/[0.06] text-[#737373] dark:text-[#A3A39E]">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-[#171717] dark:text-white">
+            {selectedLangObj.name} ({selectedLangObj.nativeName})
+          </span>
+          <span className="opacity-60">• Regions: {selectedLangObj.regions.join(', ')}</span>
+          <span className="opacity-60">• Script: {selectedLangObj.script}</span>
+        </div>
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
+          Support: {selectedLangObj.translationSupport.replace('_', ' ').toUpperCase()}
+        </span>
+      </div>
+
       {/* ── Graceful TTS Notice ── */}
       {ttsNotice && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          className="mb-4 p-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 text-xs font-medium flex items-center gap-2"
+          className="mb-4 p-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-800 dark:text-cyan-200 text-xs font-medium flex items-center gap-2"
         >
-          <AlertCircle size={15} className="shrink-0" />
+          <AlertCircle size={15} className="shrink-0 text-cyan-500" />
           <span>{ttsNotice}</span>
         </motion.div>
       )}
 
-      {/* ── Lesson Title Header & Content Body ── */}
-      {selectedLanguage === 'kru' && !activeTranslation.isAvailable ? (
-        /* Missing Kurukh Translation Fallback Container */
-        <div className="py-10 px-6 rounded-3xl border border-amber-500/30 bg-amber-500/5 text-amber-700 dark:text-amber-300 text-center space-y-3 my-6">
+      {/* ── Missing Translation Fallback & Dynamic Generator ── */}
+      {!activeTranslation.isAvailable ? (
+        <div className="py-10 px-6 rounded-3xl border border-amber-500/30 bg-amber-500/5 text-amber-700 dark:text-amber-300 text-center space-y-4 my-6">
           <div className="w-12 h-12 mx-auto rounded-full bg-amber-500/15 flex items-center justify-center text-amber-500 font-bold text-xl">
             <Globe size={24} />
           </div>
-          <h3 className="font-display text-base sm:text-lg font-bold">
-            Kurukh translation is not available for this lesson yet.
-          </h3>
-          <p className="text-xs sm:text-sm text-amber-700/80 dark:text-amber-400/90 max-w-md mx-auto">
-            Please check back later.
-          </p>
+          <div>
+            <h3 className="font-display text-base sm:text-lg font-bold">
+              {selectedLangObj.name} ({selectedLangObj.nativeName}) translation is not pre-packaged for this lesson.
+            </h3>
+            <p className="text-xs sm:text-sm text-amber-700/80 dark:text-amber-400/90 max-w-md mx-auto mt-1">
+              Associated regions: {selectedLangObj.regions.join(', ')}. You can generate an on-the-fly synthesis below.
+            </p>
+          </div>
+
+          <button
+            onClick={handleGenerateTranslation}
+            disabled={isTranslatingOnFly}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition-all cursor-pointer disabled:opacity-60"
+          >
+            {isTranslatingOnFly ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            <span>{isTranslatingOnFly ? `Synthesizing ${selectedLangObj.name}...` : `Generate ${selectedLangObj.name} Translation`}</span>
+          </button>
         </div>
       ) : (
         /* Active Lesson Content */
@@ -247,7 +327,7 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
                 Lesson {lesson.lessonNumber}
               </span>
               <span className="text-xs font-mono text-[#A3A39E]">
-                MODULE {lesson.lessonNumber.padStart(2, '0')} · {selectedLanguage === 'kru' ? 'Kurukh' : 'English'}
+                MODULE {lesson.lessonNumber.padStart(2, '0')} · {selectedLangObj.name.toUpperCase()}
               </span>
             </div>
 
@@ -258,7 +338,7 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
             {activeTranslation.description && (
               <div className="p-4 rounded-2xl border bg-black/[0.02] dark:bg-white/[0.02] border-black/[0.05] dark:border-white/[0.06]">
                 <p className="text-xs font-semibold text-[#737373] dark:text-[#A3A39E] uppercase tracking-wider mb-1">
-                  Description ({selectedLanguage === 'kru' ? 'Kurukh' : 'English'})
+                  Description ({selectedLangObj.name} — {selectedLangObj.nativeName})
                 </p>
                 <p className="text-sm font-medium text-[#404040] dark:text-[#D4D4D4] leading-relaxed">
                   {activeTranslation.description}
@@ -272,7 +352,7 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
             <div className="flex items-center gap-2 mb-3">
               <Sparkles size={16} className="text-cyan-500" />
               <h2 className="font-display text-xs font-bold uppercase tracking-wider text-[#A3A39E]">
-                Lesson Content ({selectedLanguage === 'kru' ? 'Kurukh' : 'English'})
+                Lesson Content ({selectedLangObj.name} — {selectedLangObj.nativeName})
               </h2>
             </div>
             <div className="prose dark:prose-invert max-w-none text-left">
@@ -299,7 +379,7 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
             </div>
           </div>
           <button
-            onClick={() => alert(`Downloading resource: ${lesson.material}`)}
+            onClick={() => alert(`Accessing resource: ${lesson.material}`)}
             className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
           >
             <Download size={14} />
@@ -320,10 +400,9 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
 
         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
           <CheckCircle2 size={14} />
-          Module Verified & Ready ({selectedLanguage.toUpperCase()})
+          Module Verified ({selectedLangObj.name})
         </span>
       </div>
     </motion.div>
   )
 }
-

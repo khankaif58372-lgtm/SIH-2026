@@ -1,9 +1,18 @@
 /**
- * Translation service helper supporting automatic vernacular translation for Indic languages.
- * Integrates with dedicated Kurukh Translation Engine and MyMemory API.
+ * translator.ts
+ *
+ * Central translation service for BhashaMitra (Unveishna 2026).
+ * Integrates:
+ * 1. Dedicated Kurukh Translation Engine (kurukhTranslator.ts)
+ * 2. Curated Tribal Dictionaries & Phrasebooks (tribalDictionaries.ts) for:
+ *    Santali, Bhili, Bhilodi, Gondi, Bodo, Khasi, Kokborok, Kui
+ * 3. MyMemory API & dictionaries for English, Hindi, and Assamese.
+ * 4. Honest linguistic status reporting — never spoof tribal translations.
  */
 
 import { translateToKurukh } from './kurukhTranslator'
+import { lookupTribalPhrase, getTribalHonestStatus } from './tribalDictionaries'
+import { getLanguageById, isTribalLanguage } from '../data/languages'
 
 export interface TranslationParams {
   text: string
@@ -11,23 +20,15 @@ export interface TranslationParams {
   targetLanguageId: string
 }
 
-// Supported language codes mapping for standard translation API
+// Supported language codes mapping for standard external NMT translation API
 const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: 'en',
   hi: 'hi',
-  mr: 'mr',
-  bn: 'bn',
-  ta: 'ta',
-  te: 'te',
-  kn: 'kn',
-  ml: 'ml',
-  gu: 'gu',
-  pa: 'pa',
-  or: 'or',
+  as: 'as',
 }
 
-// Dictionary for offline / instant phrase translation fallback
-const PHRASE_DICTIONARY: Record<string, Record<string, string>> = {
+// Universal fallback phrases for Hindi & English
+const GENERAL_DICTIONARY: Record<string, Record<string, string>> = {
   hi: {
     'good morning': 'सुप्रभात',
     'good afternoon': 'शुभ दोपहर',
@@ -46,70 +47,25 @@ const PHRASE_DICTIONARY: Record<string, Record<string, string>> = {
     'education': 'शिक्षा',
     'science': 'विज्ञान',
     'mathematics': 'गणित',
+    'school': 'विद्यालय / स्कूल',
+    'teacher': 'शिक्षक / अध्यापक',
+    'student': 'विद्यार्थी / छात्र',
+    'book': 'पुस्तक / किताब',
   },
-  mr: {
-    'good morning': 'शुभ प्रभात',
-    'hello': 'नमस्कार',
-    'how are you?': 'तुम्ही कसे आहात?',
-    'how are you': 'तुम्ही कसे आहात?',
-    'thank you': 'धन्यवाद',
-    'welcome': 'सुस्वागतम्',
-  },
-  bn: {
-    'good morning': 'সুপ্রভাত',
-    'hello': 'নমস্কার',
-    'how are you?': 'আপনি কেমন আছেন?',
-    'how are you': 'আপনি কেমন আছেন?',
-    'thank you': 'ধন্যবাদ',
-  },
-  ta: {
-    'good morning': 'காலை வணக்கம்',
-    'hello': 'வணக்கம்',
-    'how are you?': 'நீங்கள் எப்படி இருக்கிறீர்கள்?',
-    'how are you': 'நீங்கள் எப்படி இருக்கிறீர்கள்?',
-    'thank you': 'நன்றி',
-  },
-  te: {
-    'good morning': 'శుభోదయం',
-    'hello': 'నమస్కారం',
-    'how are you?': 'మీరు ఎలా ఉన్నారు?',
-    'how are you': 'మీరు ఎలా ఉన్నారు?',
-    'thank you': 'ధన్యవాదాలు',
-  },
-  kn: {
-    'good morning': 'ಶುಭೋದಯ',
-    'hello': 'ನಮಸ್ಕಾರ',
-    'how are you?': 'ಹೇಗಿದ್ದೀರ?',
-    'how are you': 'ಹೇಗಿದ್ದೀರ?',
-    'thank you': 'ಧನ್ಯವಾದಗಳು',
-  },
-  ml: {
-    'good morning': 'സുപ്രഭാതം',
-    'hello': 'നമസ്കാരം',
-    'how are you?': 'സുഖമാണോ?',
-    'how are you': 'സുഖമാണോ?',
-    'thank you': 'നന്ദി',
-  },
-  gu: {
-    'good morning': 'શુભ સવાર',
-    'hello': 'નમસ્તે',
-    'how are you?': 'તમે કેમ છો?',
-    'how are you': 'તમે કેમ છો?',
-    'thank you': 'આભાર',
-  },
-  pa: {
-    'good morning': 'ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ',
-    'hello': 'ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ',
-    'how are you?': 'ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?',
-    'how are you': 'ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?',
-    'thank you': 'ਧੰਨਵਾਦ',
-  },
-  or: {
-    'good morning': 'ଶୁଭ ସକାଳ',
-    'hello': 'ନମସ୍କାର',
-    'how are you?': 'ଆପଣ କେମିତି ଅଛନ୍ତି?',
-    'how are you': 'ଆପଣ କେମିତି ଅଛନ୍ତି?',
-    'thank you': 'ଧନ୍ୟବାଦ',
+  en: {
+    'नमस्ते': 'Hello',
+    'सुप्रभात': 'Good morning',
+    'धन्यवाद': 'Thank you',
+    'हाँ': 'Yes',
+    'नहीं': 'No',
+    'शिक्षा': 'Education',
+    'सीखना': 'Learning',
+    'विज्ञान': 'Science',
+    'गणित': 'Mathematics',
+    'विद्यालय': 'School',
+    'शिक्षक': 'Teacher',
+    'विद्यार्थी': 'Student',
+    'किताब': 'Book',
   },
 }
 
@@ -123,40 +79,54 @@ export async function translateTextAuto({
 }: TranslationParams): Promise<string> {
   if (!text || !text.trim()) return ''
 
-  const cleanInput = text.trim().toLowerCase()
+  const cleanInput = text.trim()
+  const lowerInput = cleanInput.toLowerCase()
   const targetKey = targetLanguageId.toLowerCase()
   const sourceKey = (sourceLanguageId || 'auto').toLowerCase()
+  const targetLangObj = getLanguageById(targetKey)
 
-  // 1. Route Kurukh target language directly to Dedicated Kurukh Engine
-  if (targetKey === 'kru') {
-    return translateToKurukh({ text, sourceLanguageId })
-  }
-
-  // 2. If source and target are the same language, return original text directly
+  // 1. Direct identity: If source and target are the same language, return text
   if (sourceKey === targetKey) {
-    return text.trim()
+    return cleanInput
   }
 
-  // 3. Check direct phrase dictionary match first (instant offline response)
-  if (PHRASE_DICTIONARY[targetKey] && PHRASE_DICTIONARY[targetKey][cleanInput]) {
-    return PHRASE_DICTIONARY[targetKey][cleanInput]
+  // 2. Dedicated Kurukh Translation Engine (Grammar rule + vocabulary synthesizer)
+  if (targetKey === 'kru') {
+    return translateToKurukh({ text: cleanInput, sourceLanguageId })
   }
 
-  // 4. Resolve API language codes
-  const sourceCode = LANGUAGE_CODE_MAP[sourceKey] || 'autodetect'
+  // 3. Verified Curated Tribal Phrasebook & Lexical Dictionary lookup
+  const tribalMatch = lookupTribalPhrase(cleanInput, targetKey)
+  if (tribalMatch) {
+    return tribalMatch
+  }
+
+  // 4. Standard General Dictionary Match (Instant offline response)
+  if (GENERAL_DICTIONARY[targetKey] && GENERAL_DICTIONARY[targetKey][lowerInput]) {
+    return GENERAL_DICTIONARY[targetKey][lowerInput]
+  }
+
+  // 5. If Target is a Tribal Language and not matched in verified corpus:
+  // Strictly avoid returning spoofed Hindi or English text. Return honest status!
+  if (isTribalLanguage(targetKey)) {
+    const langName = targetLangObj?.name || 'Tribal'
+    return getTribalHonestStatus(langName, cleanInput)
+  }
+
+  // 6. External Translation API (for English, Hindi, Assamese)
+  const sourceCode = LANGUAGE_CODE_MAP[sourceKey] || (sourceKey === 'en' ? 'en' : 'autodetect')
   const targetCode = LANGUAGE_CODE_MAP[targetKey]
 
   if (!targetCode) {
-    return 'This language is not currently supported.'
+    return `[${targetLangObj?.name || targetKey}]: Translation model in development for this language.`
   }
 
-  // 5. Fetch translation from MyMemory API
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 4000)
 
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
-      text.trim()
+      cleanInput
     )}&langpair=${sourceCode}|${targetCode}`
 
     const res = await fetch(url, { signal: controller.signal })
@@ -171,7 +141,7 @@ export async function translateTextAuto({
         typeof data.responseData.translatedText === 'string'
       ) {
         const result = data.responseData.translatedText.trim()
-        if (result && result.toUpperCase() !== 'NULL') {
+        if (result && result.toUpperCase() !== 'NULL' && result !== cleanInput) {
           return result
         }
       }
@@ -180,6 +150,6 @@ export async function translateTextAuto({
     console.warn('Network translation request failed or timed out:', err)
   }
 
-  // 6. Fallback if network request is unavailable
-  return 'Translation temporarily unavailable.'
+  // Fallback for network API
+  return `[${targetLangObj?.name || 'Translation'}]: Service temporarily offline. Please check connection.`
 }

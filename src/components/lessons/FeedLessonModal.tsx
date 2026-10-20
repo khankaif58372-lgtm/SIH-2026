@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Check, Plus, UploadCloud, BookOpen, Sparkles, Loader2, Globe } from 'lucide-react'
+import { X, Check, Plus, UploadCloud, BookOpen, Sparkles, Loader2, Globe, Languages as LanguagesIcon } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import { Lesson, LessonFormData } from '../../types/lesson'
 import { translateTextAuto } from '../../services/translator'
+import { LANGUAGES, getLanguageById } from '../../data/languages'
 
 interface SubjectOption {
   id: string
@@ -19,6 +20,9 @@ interface FeedLessonModalProps {
   subjectsList: SubjectOption[]
   editingLesson?: Lesson | null
 }
+
+// Vernacular target options (excluding English which is primary source)
+const VERNACULAR_OPTIONS = LANGUAGES.filter((l) => l.id !== 'en')
 
 export function FeedLessonModal({
   isOpen,
@@ -40,14 +44,18 @@ export function FeedLessonModal({
   const [enDescription, setEnDescription] = useState('')
   const [enContent, setEnContent] = useState('')
 
-  // Kurukh Fields
-  const [kruTitle, setKruTitle] = useState('')
-  const [kruDescription, setKruDescription] = useState('')
-  const [kruContent, setKruContent] = useState('')
+  // Selected Vernacular Target Language & Fields
+  const [vernacularLangId, setVernacularLangId] = useState<string>('sat')
+  const [vernacularTitle, setVernacularTitle] = useState('')
+  const [vernacularDescription, setVernacularDescription] = useState('')
+  const [vernacularContent, setVernacularContent] = useState('')
 
   const [isTranslating, setIsTranslating] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
+  const selectedVernacularObj = getLanguageById(vernacularLangId) || VERNACULAR_OPTIONS[0]
+
+  // Load language translation when editingLesson or vernacularLangId changes
   useEffect(() => {
     if (editingLesson) {
       setSubjectId(editingLesson.subjectId)
@@ -59,9 +67,10 @@ export function FeedLessonModal({
       setEnDescription(editingLesson.translations?.en?.description || editingLesson.description || '')
       setEnContent(editingLesson.translations?.en?.content || editingLesson.content || '')
 
-      setKruTitle(editingLesson.translations?.kru?.title || '')
-      setKruDescription(editingLesson.translations?.kru?.description || '')
-      setKruContent(editingLesson.translations?.kru?.content || '')
+      const trans = editingLesson.translations?.[vernacularLangId]
+      setVernacularTitle(trans?.title || '')
+      setVernacularDescription(trans?.description || '')
+      setVernacularContent(trans?.content || '')
     } else {
       if (selectedSubjectId) {
         setSubjectId(selectedSubjectId)
@@ -74,25 +83,31 @@ export function FeedLessonModal({
       setEnDescription('')
       setEnContent('')
 
-      setKruTitle('')
-      setKruDescription('')
-      setKruContent('')
+      setVernacularTitle('')
+      setVernacularDescription('')
+      setVernacularContent('')
     }
-  }, [editingLesson, selectedSubjectId, isOpen])
+  }, [editingLesson, selectedSubjectId, isOpen, vernacularLangId])
 
   const handleAutoTranslate = async () => {
     if (!enTitle.trim() && !enContent.trim()) return
     setIsTranslating(true)
     try {
-      const titleRes = enTitle ? await translateTextAuto({ text: enTitle, targetLanguageId: 'kru' }) : ''
-      const descRes = enDescription ? await translateTextAuto({ text: enDescription, targetLanguageId: 'kru' }) : ''
-      const contentRes = enContent ? await translateTextAuto({ text: enContent, targetLanguageId: 'kru' }) : ''
+      const titleRes = enTitle
+        ? await translateTextAuto({ text: enTitle, targetLanguageId: vernacularLangId })
+        : ''
+      const descRes = enDescription
+        ? await translateTextAuto({ text: enDescription, targetLanguageId: vernacularLangId })
+        : ''
+      const contentRes = enContent
+        ? await translateTextAuto({ text: enContent, targetLanguageId: vernacularLangId })
+        : ''
 
-      setKruTitle(titleRes)
-      setKruDescription(descRes)
-      setKruContent(contentRes)
+      setVernacularTitle(titleRes)
+      setVernacularDescription(descRes)
+      setVernacularContent(contentRes)
     } catch (err) {
-      console.error('Auto translation failed:', err)
+      console.error('Vernacular auto-draft failed:', err)
     } finally {
       setIsTranslating(false)
     }
@@ -114,17 +129,18 @@ export function FeedLessonModal({
           material: material.trim(),
           duration: duration.trim(),
           translations: {
+            ...(editingLesson?.translations || {}),
             en: {
               title: enTitle.trim(),
               description: enDescription.trim(),
               content: enContent.trim(),
             },
-            ...(kruTitle.trim() && kruContent.trim()
+            ...(vernacularTitle.trim() && vernacularContent.trim()
               ? {
-                  kru: {
-                    title: kruTitle.trim(),
-                    description: kruDescription.trim(),
-                    content: kruContent.trim(),
+                  [vernacularLangId]: {
+                    title: vernacularTitle.trim(),
+                    description: vernacularDescription.trim(),
+                    content: vernacularContent.trim(),
                   },
                 }
               : {}),
@@ -141,49 +157,56 @@ export function FeedLessonModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: 16 }}
+          initial={{ opacity: 0, scale: 0.95, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 16 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className={`w-full max-w-2xl p-6 sm:p-8 rounded-3xl border text-left shadow-2xl backdrop-blur-2xl max-h-[90vh] overflow-y-auto ${
-            isDarkMode ? 'bg-[#141418] border-white/[0.08] text-[#F5F5F5]' : 'bg-[#FAFAF8] border-black/[0.08] text-[#171717]'
+          exit={{ opacity: 0, scale: 0.95, y: 16 }}
+          className={`relative w-full max-w-2xl my-8 p-6 sm:p-8 rounded-3xl border shadow-2xl theme-transition text-left ${
+            isDarkMode
+              ? 'bg-[#141418] border-white/[0.1] text-[#F5F5F5]'
+              : 'bg-[#FAFAF8] border-black/[0.1] text-[#171717]'
           }`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-violet-500 block">
-                TEACHER CURRICULUM MANAGEMENT
-              </span>
-              <h3 className="font-display text-lg sm:text-xl font-bold flex items-center gap-2">
-                <BookOpen size={18} className="text-violet-500" />
-                <span>{editingLesson ? 'Edit Lesson' : '+ Feed Lesson'}</span>
-              </h3>
+          <div className="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-violet-500/10 text-violet-500">
+                <BookOpen size={18} />
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-bold tracking-tight">
+                  {editingLesson ? 'Edit Subject Lesson' : 'Feed New Subject Lesson'}
+                </h3>
+                <p className="text-xs text-[#6F6F6A] dark:text-[#A3A39E]">
+                  Create curriculum modules with verified regional vernacular support.
+                </p>
+              </div>
             </div>
+
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl text-[#A3A39E] hover:text-[#171717] dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.05] cursor-pointer"
+              className="p-1.5 rounded-xl hover:bg-black/[0.05] dark:hover:bg-white/[0.08] text-[#A3A39E] cursor-pointer"
             >
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
 
+          {/* Form */}
           {isSuccess ? (
             <div className="py-12 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-500 mx-auto flex items-center justify-center">
                 <Check size={24} />
               </div>
-              <p className="font-display text-base font-bold">
-                {editingLesson ? 'Lesson Successfully Updated' : 'Lesson Synchronized & Published'}
+              <p className="font-display text-base font-bold text-emerald-500">
+                Lesson Published Successfully
               </p>
               <p className="text-xs text-[#A3A39E]">
-                Both English and Kurukh versions are live for students.
+                Module translations are live for rural & regional learners.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-6 text-xs mt-4">
               {/* General Metadata */}
               <div className="p-4 rounded-2xl border bg-black/[0.02] dark:bg-white/[0.02] border-black/[0.05] dark:border-white/[0.06] space-y-3">
                 {/* Subject Selection Dropdown */}
@@ -247,14 +270,12 @@ export function FeedLessonModal({
                 </div>
               </div>
 
-              {/* ---------------------------------------------------- */}
-              {/* ENGLISH CONTENT SECTION                              */}
-              {/* ---------------------------------------------------- */}
+              {/* ENGLISH CONTENT SECTION */}
               <div className="p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 space-y-3">
                 <div className="flex items-center gap-2 pb-1 border-b border-cyan-500/20">
                   <Globe size={14} className="text-cyan-500" />
                   <span className="font-display text-xs font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
-                    English Content
+                    English Content (Primary Source)
                   </span>
                 </div>
 
@@ -312,38 +333,56 @@ export function FeedLessonModal({
                 </div>
               </div>
 
-              {/* ---------------------------------------------------- */}
-              {/* KURUKH CONTENT SECTION                               */}
-              {/* ---------------------------------------------------- */}
+              {/* VERNACULAR CONTENT SECTION (SELECTABLE FOR ANY SUPPORTED REGIONAL / TRIBAL LANGUAGE) */}
               <div className="p-4 rounded-2xl border border-violet-500/20 bg-violet-500/5 space-y-3">
-                <div className="flex items-center justify-between pb-1 border-b border-violet-500/20">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-violet-500/20">
                   <div className="flex items-center gap-2">
-                    <Globe size={14} className="text-violet-500" />
+                    <LanguagesIcon size={14} className="text-violet-500 shrink-0" />
                     <span className="font-display text-xs font-extrabold uppercase tracking-wider text-violet-600 dark:text-violet-400">
-                      Kurukh Content (कुड़ुख़)
+                      Vernacular Target:
                     </span>
+                    <select
+                      value={vernacularLangId}
+                      onChange={(e) => setVernacularLangId(e.target.value)}
+                      className={`px-3 py-1 rounded-xl border text-xs font-bold outline-none cursor-pointer ${
+                        isDarkMode
+                          ? 'bg-[#1C1C22] border-white/[0.1] text-violet-300'
+                          : 'bg-white border-black/[0.1] text-violet-700 shadow-xs'
+                      }`}
+                    >
+                      {VERNACULAR_OPTIONS.map((lang) => (
+                        <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
+                          {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <button
                     type="button"
                     onClick={handleAutoTranslate}
                     disabled={isTranslating || (!enTitle && !enContent)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-violet-500/10 text-violet-600 dark:text-violet-300 border border-violet-500/30 hover:bg-violet-500/20 transition-colors cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-violet-600 hover:bg-violet-700 text-white shadow-xs transition-colors cursor-pointer disabled:opacity-50 shrink-0"
                   >
                     {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-                    <span>Auto-Draft Kurukh</span>
+                    <span>Auto-Draft {selectedVernacularObj.name}</span>
                   </button>
                 </div>
 
+                <div className="text-[11px] text-[#A3A39E] flex items-center gap-2">
+                  <span>Script: <strong>{selectedVernacularObj.script}</strong></span>
+                  <span>• Regions: <strong>{selectedVernacularObj.regions.join(', ')}</strong></span>
+                </div>
+
                 <div>
                   <label className="block font-semibold mb-1 text-[#6F6F6A] dark:text-[#A3A39E]">
-                    Title (Kurukh):
+                    Title ({selectedVernacularObj.name} — {selectedVernacularObj.nativeName}):
                   </label>
                   <input
                     type="text"
-                    value={kruTitle}
-                    onChange={(e) => setKruTitle(e.target.value)}
-                    placeholder="e.g. आर्टिफिशियल इंटेलिजेंस गहि परिचय (Optional if not translated yet)"
+                    value={vernacularTitle}
+                    onChange={(e) => setVernacularTitle(e.target.value)}
+                    placeholder={`e.g. ${selectedVernacularObj.name} title translation...`}
                     className={`w-full px-3.5 py-2.5 rounded-xl border font-medium outline-none ${
                       isDarkMode
                         ? 'bg-white/[0.04] border-white/[0.08] text-white'
@@ -354,13 +393,13 @@ export function FeedLessonModal({
 
                 <div>
                   <label className="block font-semibold mb-1 text-[#6F6F6A] dark:text-[#A3A39E]">
-                    Description (Kurukh):
+                    Description ({selectedVernacularObj.name}):
                   </label>
                   <input
                     type="text"
-                    value={kruDescription}
-                    onChange={(e) => setKruDescription(e.target.value)}
-                    placeholder="e.g. AI गहि संचे अरा भासा समझ।"
+                    value={vernacularDescription}
+                    onChange={(e) => setVernacularDescription(e.target.value)}
+                    placeholder={`e.g. ${selectedVernacularObj.name} short summary...`}
                     className={`w-full px-3.5 py-2.5 rounded-xl border font-medium outline-none ${
                       isDarkMode
                         ? 'bg-white/[0.04] border-white/[0.08] text-white'
@@ -371,13 +410,13 @@ export function FeedLessonModal({
 
                 <div>
                   <label className="block font-semibold mb-1 text-[#6F6F6A] dark:text-[#A3A39E]">
-                    Content (Kurukh):
+                    Content ({selectedVernacularObj.name}):
                   </label>
                   <textarea
                     rows={4}
-                    value={kruContent}
-                    onChange={(e) => setKruContent(e.target.value)}
-                    placeholder="Enter Kurukh translated content here (or leave empty if unavailable)..."
+                    value={vernacularContent}
+                    onChange={(e) => setVernacularContent(e.target.value)}
+                    placeholder={`Enter ${selectedVernacularObj.name} content...`}
                     className={`w-full px-3.5 py-2.5 rounded-xl border font-medium outline-none resize-none ${
                       isDarkMode
                         ? 'bg-white/[0.04] border-white/[0.08] text-white'
@@ -432,4 +471,3 @@ export function FeedLessonModal({
     </AnimatePresence>
   )
 }
-

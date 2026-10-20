@@ -29,9 +29,10 @@ const performanceData = [
 
 const languageDistribution = [
   { name: 'Hindi', students: 45, color: '#06b6d4' },
-  { name: 'Tamil', students: 28, color: '#8b5cf6' },
-  { name: 'Bengali', students: 15, color: '#10b981' },
-  { name: 'Marathi', students: 10, color: '#f59e0b' },
+  { name: 'Santali', students: 28, color: '#8b5cf6' },
+  { name: 'Kurukh', students: 22, color: '#10b981' },
+  { name: 'Kui', students: 18, color: '#f59e0b' },
+  { name: 'Bhili', students: 15, color: '#ec4899' },
 ]
 
 export function TeacherHomePage() {
@@ -196,7 +197,7 @@ export function TeacherHomePage() {
           <div className="space-y-4">
             {[
               { text: "Aarav Sharma completed 'Animals Around Us'", time: "10 min ago", icon: <CheckCircle2 size={14} className="text-emerald-400" /> },
-              { text: "Kavitha Rajan earned 50 XP in Tamil", time: "1 hour ago", icon: <Star size={14} className="text-amber-400" /> },
+              { text: "Pooja Soren earned 50 XP in Santali", time: "1 hour ago", icon: <Star size={14} className="text-amber-400" /> },
               { text: "New lesson 'Shapes' published to Hindi class", time: "2 hours ago", icon: <BookOpen size={14} className="text-cyan-400" /> },
             ].map((act, i) => (
               <div key={i} className="flex items-start gap-3 p-2 hover:bg-white/5 rounded-lg transition-colors">

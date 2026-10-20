@@ -2,14 +2,20 @@
 
 export type UserRole = 'student' | 'teacher' | null
 
-// ─── Language ────────────────────────────────────────────────────────────────
+export type CapabilityStatus = 'supported' | 'partial' | 'phrasebook' | 'dedicated_engine' | 'full' | 'experimental' | 'unsupported'
 
 export interface Language {
   id: string
   name: string        // English name
-  nativeName: string  // Name in its own script
+  nativeName: string  // Name in its own verified native script
   locale: string      // BCP-47 locale tag
   script: string      // Unicode script name
+  regions: string[]   // Associated Indian states & cultural regions (Census validated)
+  isTribal?: boolean
+  translationSupport: CapabilityStatus
+  sttSupport: 'supported' | 'partial' | 'unsupported'
+  ttsSupport: 'supported' | 'partial' | 'unsupported'
+  notes?: string
 }
 
 // ─── Education Level ─────────────────────────────────────────────────────────

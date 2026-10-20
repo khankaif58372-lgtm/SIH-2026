@@ -6,7 +6,18 @@ export interface LessonTranslation {
 
 export interface LessonTranslations {
   en?: LessonTranslation
+  sat?: LessonTranslation
   kru?: LessonTranslation
+  bhili?: LessonTranslation
+  bhilodi?: LessonTranslation
+  gon?: LessonTranslation
+  as?: LessonTranslation
+  brx?: LessonTranslation
+  kha?: LessonTranslation
+  kokborok?: LessonTranslation
+  kui?: LessonTranslation
+  hi?: LessonTranslation
+  [languageId: string]: LessonTranslation | undefined
 }
 
 export interface Lesson {

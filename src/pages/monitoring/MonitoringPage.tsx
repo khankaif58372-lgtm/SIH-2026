@@ -18,21 +18,21 @@ interface ConversationItem {
   timestamp: string
 }
 
-// Locale codes mapping for Web Speech API recognition
+// Locale codes mapping for Web Speech API recognition (fallback to phonetic capture where browser lacks native tribal models)
 const SPEECH_LOCALES: Record<string, string> = {
   auto: 'en-US',
-  en: 'en-US',
+  en: 'en-IN',
   hi: 'hi-IN',
-  mr: 'mr-IN',
-  bn: 'bn-IN',
-  ta: 'ta-IN',
-  te: 'te-IN',
-  kn: 'kn-IN',
-  ml: 'ml-IN',
-  gu: 'gu-IN',
-  pa: 'pa-IN',
-  or: 'or-IN',
+  sat: 'hi-IN',
   kru: 'hi-IN',
+  bhili: 'hi-IN',
+  bhilodi: 'hi-IN',
+  gon: 'hi-IN',
+  as: 'as-IN',
+  brx: 'hi-IN',
+  kha: 'en-IN',
+  kokborok: 'bn-IN',
+  kui: 'hi-IN',
 }
 
 export function MonitoringPage() {
@@ -50,6 +50,7 @@ export function MonitoringPage() {
 
   // Text-to-Speech (TTS) - USER CONTROLLED TOGGLE (Default: OFF)
   const [ttsEnabled, setTtsEnabled] = useState(false)
+  const [ttsNotice, setTtsNotice] = useState<string | null>(null)
 
   // Live Conversation Stream
   const [conversation, setConversation] = useState<ConversationItem[]>([])
@@ -101,10 +102,17 @@ export function MonitoringPage() {
         if (
           ttsEnabled &&
           translated &&
+          !translated.startsWith('[') &&
           !translated.includes('unavailable') &&
           !translated.includes('supported')
         ) {
-          speechService.speak(translated, targetLanguageObj.locale || 'hi-IN')
+          const hasVoice = speechService.hasVoiceForLocale(targetLanguageObj.locale)
+          if (hasVoice) {
+            speechService.speak(translated, targetLanguageObj.locale)
+          } else {
+            setTtsNotice(`Text-to-Speech note: Device audio voice for ${targetLanguageObj.name} is not installed. Text is accurately rendered in ${targetLanguageObj.script}.`)
+            setTimeout(() => setTtsNotice(null), 6000)
+          }
         }
       } catch (err) {
         console.error('Translation error:', err)
@@ -397,7 +405,7 @@ export function MonitoringPage() {
               </option>
               {LANGUAGES.map((lang) => (
                 <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
-                  {lang.name} ({lang.nativeName})
+                  {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
                 </option>
               ))}
             </select>
@@ -414,7 +422,7 @@ export function MonitoringPage() {
             <select
               value={targetLangId}
               onChange={(e) => setTargetLangId(e.target.value)}
-              className={`w-full sm:w-52 px-3.5 py-2 rounded-2xl border text-xs font-semibold outline-none cursor-pointer theme-transition ${
+              className={`w-full sm:w-60 px-3.5 py-2 rounded-2xl border text-xs font-semibold outline-none cursor-pointer theme-transition ${
                 isDarkMode
                   ? 'bg-[#1C1C22] border-white/[0.1] text-white focus:border-cyan-400'
                   : 'bg-white border-black/[0.1] text-[#171717] focus:border-cyan-500'
@@ -422,12 +430,55 @@ export function MonitoringPage() {
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
-                  {lang.name} ({lang.nativeName})
+                  {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
                 </option>
               ))}
             </select>
           </div>
         </div>
+
+        {/* ── Verified Language & Regional Metadata Strip ── */}
+        <div
+          className={`px-5 py-3.5 rounded-2xl border text-xs flex flex-wrap items-center justify-between gap-3 theme-transition ${
+            isDarkMode ? 'bg-[#141418]/60 border-white/[0.06] text-[#A3A39E]' : 'bg-white/80 border-black/[0.05] text-[#6F6F6A]'
+          }`}
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-bold text-[#171717] dark:text-white">
+              {targetLanguageObj.name} ({targetLanguageObj.nativeName})
+            </span>
+            <span className="text-[11px] opacity-70">
+              • Script: {targetLanguageObj.script}
+            </span>
+            <span className="text-[11px] opacity-70">
+              • Regions: {targetLanguageObj.regions.join(', ')}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono">
+            <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
+              Translation: {targetLanguageObj.translationSupport.replace('_', ' ').toUpperCase()}
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 font-semibold border border-violet-500/20">
+              STT: {targetLanguageObj.sttSupport.toUpperCase()}
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+              TTS: {targetLanguageObj.ttsSupport.toUpperCase()}
+            </span>
+          </div>
+        </div>
+
+        {/* ── TTS Voice Notice (if audio unavailable for tribal language) ── */}
+        {ttsNotice && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-3.5 rounded-2xl border bg-cyan-500/10 border-cyan-500/30 text-cyan-800 dark:text-cyan-200 text-xs flex items-center gap-2"
+          >
+            <AlertCircle size={15} className="shrink-0 text-cyan-500" />
+            <span>{ttsNotice}</span>
+          </motion.div>
+        )}
 
         {/* ── Mic Permission Prompt ── */}
         {micError && (

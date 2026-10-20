@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Check, X, Sparkles } from 'lucide-react'
 import { useAppStore } from '../../../store/useAppStore'
+import { LANGUAGES } from '../../../data/languages'
 
 interface StudentRecord {
   id: string
@@ -23,62 +24,62 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     accuracies: [
       { language: 'Hindi', percentage: 94 },
       { language: 'English', percentage: 88 },
-      { language: 'Marathi', percentage: 78 },
+      { language: 'Kurukh', percentage: 78 },
     ],
   },
   {
     id: 'STU-2026-02',
     name: 'Pooja Soren',
-    motherTongue: 'Kurukh',
-    motherTongueScript: 'कुड़ुख',
+    motherTongue: 'Santali',
+    motherTongueScript: 'ᱥᱟᱱᱛᱟᱲᱤ',
     accuracies: [
-      { language: 'Kurukh', percentage: 96 },
+      { language: 'Santali', percentage: 96 },
       { language: 'Hindi', percentage: 86 },
       { language: 'English', percentage: 80 },
     ],
   },
   {
     id: 'STU-2026-03',
-    name: 'Rohan Deshmukh',
-    motherTongue: 'Marathi',
-    motherTongueScript: 'मराठी',
+    name: 'Birsa Oraon',
+    motherTongue: 'Kurukh',
+    motherTongueScript: 'कुड़ुख़',
     accuracies: [
-      { language: 'Marathi', percentage: 92 },
-      { language: 'Hindi', percentage: 90 },
-      { language: 'English', percentage: 84 },
+      { language: 'Kurukh', percentage: 95 },
+      { language: 'Hindi', percentage: 88 },
+      { language: 'English', percentage: 82 },
     ],
   },
   {
     id: 'STU-2026-04',
-    name: 'Ananya Mukhopadhyay',
-    motherTongue: 'Bengali',
-    motherTongueScript: 'বাংলা',
+    name: 'Laxmi Majhi',
+    motherTongue: 'Kui',
+    motherTongueScript: 'କୁଇ',
     accuracies: [
-      { language: 'Bengali', percentage: 95 },
+      { language: 'Kui', percentage: 94 },
       { language: 'Hindi', percentage: 82 },
-      { language: 'English', percentage: 90 },
+      { language: 'English', percentage: 85 },
     ],
   },
   {
     id: 'STU-2026-05',
-    name: 'Karthik Subramanian',
-    motherTongue: 'Tamil',
-    motherTongueScript: 'தமிழ்',
+    name: 'Sunita Bhil',
+    motherTongue: 'Bhili',
+    motherTongueScript: 'भीली',
     accuracies: [
-      { language: 'Tamil', percentage: 97 },
-      { language: 'English', percentage: 91 },
-      { language: 'Hindi', percentage: 76 },
+      { language: 'Bhili', percentage: 93 },
+      { language: 'Hindi', percentage: 85 },
+      { language: 'English', percentage: 78 },
     ],
   },
   {
     id: 'STU-2026-06',
-    name: 'Jaspreet Kaur',
-    motherTongue: 'Punjabi',
-    motherTongueScript: 'ਪੰਜਾਬੀ',
+    name: 'Ramesh Vasave',
+    motherTongue: 'Bhilodi',
+    motherTongueScript: 'भीलोड़ी',
     accuracies: [
-      { language: 'Punjabi', percentage: 93 },
+      { language: 'Bhilodi', percentage: 92 },
       { language: 'Hindi', percentage: 89 },
-      { language: 'English', percentage: 85 },
+      { language: 'English', percentage: 81 },
     ],
   },
 ]
@@ -99,10 +100,13 @@ export function TeacherStudentsSection() {
     e.preventDefault()
     if (!newName.trim() || !newId.trim()) return
 
+    const selectedLang = LANGUAGES.find((l) => l.name === newMotherTongue)
+
     const newStudentItem: StudentRecord = {
       id: newId.trim().toUpperCase(),
       name: newName.trim(),
       motherTongue: newMotherTongue,
+      motherTongueScript: selectedLang?.nativeName,
       accuracies: [
         { language: newMotherTongue, percentage: Number(newAccuracyPrimary) },
         { language: 'English', percentage: Number(newAccuracySecondary) },
@@ -302,15 +306,11 @@ export function TeacherStudentsSection() {
                     onChange={(e) => setNewMotherTongue(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] outline-none"
                   >
-                    <option value="Kurukh">Kurukh (कुड़ुख)</option>
-                    <option value="Hindi">Hindi (हिन्दी)</option>
-                    <option value="Marathi">Marathi (मराठी)</option>
-                    <option value="Bengali">Bengali (বাংলা)</option>
-                    <option value="Tamil">Tamil (தமிழ்)</option>
-                    <option value="Telugu">Telugu (తెలుగు)</option>
-                    <option value="Gujarati">Gujarati (ગુજરાતી)</option>
-                    <option value="Punjabi">Punjabi (ਪੰਜਾਬੀ)</option>
-                    <option value="Odia">Odia (ଓଡ଼ିଆ)</option>
+                    {LANGUAGES.map((lang) => (
+                      <option key={lang.id} value={lang.name}>
+                        {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

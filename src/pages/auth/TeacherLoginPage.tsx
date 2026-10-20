@@ -45,7 +45,7 @@ export function TeacherLoginPage() {
       name: name.trim(),
       email: `${teacherId.trim().toLowerCase()}@bhashamitra.edu`,
       school: 'BhashaMitra Learning Academy',
-      languagesSupported: ['hi', 'mr', 'en'],
+      languagesSupported: ['sat', 'kru', 'bhili', 'bhilodi', 'gon', 'as', 'brx', 'kha', 'kokborok', 'kui', 'hi', 'en'],
       studentIds: [],
       createdAt: new Date().toISOString(),
     })

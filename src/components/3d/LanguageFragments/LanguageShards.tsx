@@ -14,18 +14,18 @@ interface ShardItem {
 }
 
 const SHARD_TEXTS = [
-  { text: 'ज्ञान', lang: 'Hindi' },
-  { text: 'दवावा', lang: 'Sanskrit' },
-  { text: 'বাঘ', lang: 'Bengali' },
-  { text: 'தமிழ்', lang: 'Tamil' },
-  { text: 'తెలుగు', lang: 'Telugu' },
-  { text: 'ವೃಕ್ಷ', lang: 'Kannada' },
-  { text: 'प्रकाश', lang: 'Hindi' },
-  { text: 'શિક્ષણ', lang: 'Gujarati' },
-  { text: 'ਪੰਜਾਬੀ', lang: 'Punjabi' },
-  { text: 'ଶିକ୍ଷା', lang: 'Odia' },
-  { text: 'മലയാളം', lang: 'Malayalam' },
-  { text: 'विद्या', lang: 'Marathi' },
+  { text: 'ᱥᱮᱪᱮᱫ', lang: 'Santali' },
+  { text: 'कुड़ुख़', lang: 'Kurukh' },
+  { text: 'भीली', lang: 'Bhili' },
+  { text: 'भीलोड़ी', lang: 'Bhilodi' },
+  { text: 'गोंडी', lang: 'Gondi' },
+  { text: 'জ্ঞান', lang: 'Assamese' },
+  { text: 'सोलोंथाय', lang: 'Bodo' },
+  { text: 'Jingstad', lang: 'Khasi' },
+  { text: 'ককবরক', lang: 'Kokborok' },
+  { text: 'କୁଇ', lang: 'Kui' },
+  { text: 'शिक्षा', lang: 'Hindi' },
+  { text: 'Learning', lang: 'English' },
 ]
 
 function createTextTexture(text: string): THREE.CanvasTexture {

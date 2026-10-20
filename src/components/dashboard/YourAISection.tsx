@@ -5,6 +5,7 @@ import {
   ChevronDown, Image as ImageIcon, Check, RefreshCw
 } from 'lucide-react'
 import { LANGUAGES, getLanguageById } from '../../data/languages'
+import { translateTextAuto } from '../../services/translator'
 import { useAppStore } from '../../store/useAppStore'
 import { FeedbackButtons } from '../common/FeedbackButtons'
 
@@ -81,26 +82,26 @@ const INITIAL_HISTORY: HistoryItem[] = [
   },
   {
     id: 'hist-3',
-    title: 'Structure of DNA & Genetic Code',
+    title: 'Solar System & Planetary Orbits',
     date: '2 days ago',
     sourceLang: 'hi',
-    targetLang: 'mr',
+    targetLang: 'sat',
     messages: [
       {
         id: 'm-5',
         sender: 'user',
-        text: 'डीएनए का डबल हेलिक्स मॉडल क्या है?',
+        text: 'सौरमंडल और ग्रहों की गति कैसे होती है?',
         timestamp: '2 days ago',
       },
       {
         id: 'm-6',
         sender: 'ai',
-        text: 'डीएनए की दोहरी सर्पिलाकार संरचना (Double Helix) वॉटसन और क्रिक ने 1953 में प्रस्तावित की थी।',
-        translation: 'मराठी अनुवाद: डीएनए ची दुहेरी सर्पिलाकार रचना नायट्रोजन बेस (A-T, G-C) हायड्रोजन बंधांनी जोडलेली असते.',
+        text: 'सौरमंडल में सूर्य केंद्र में स्थित है और सभी 8 ग्रह गुरुत्वाकर्षण बल के कारण इसके चारों ओर दीर्घवृत्ताकार कक्षाओं में परिक्रमा करते हैं।',
+        translation: 'ᱥᱟᱱᱛᱟᱲᱤ ᱛᱚᱨᱡᱚᱢᱟ: ᱥᱤᱧ ᱪᱟᱸᱫᱚ ᱛᱟᱞᱟ ᱨᱮ ᱢᱮᱱᱟᱭᱟ ᱟᱨ ᱥᱟᱱᱟᱢ ᱜᱨᱚᱦᱚ ᱠᱚ ᱟᱹᱪᱩᱨᱚᱜ ᱠᱟᱱᱟ᱾',
         timestamp: '2 days ago',
-        visualUrl: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=800&q=80',
-        visualTitle: 'DNA Double Helix Base Pairing',
-        visualDescription: 'Hydrogen-bonded nucleotide chains forming genetic sequences.',
+        visualUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80',
+        visualTitle: 'Planetary Orbits & Gravitational Mechanics',
+        visualDescription: 'Helio-centric elliptical orbits governed by universal gravitational attraction.',
       },
     ],
   },
@@ -115,7 +116,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
 
   // Languages selection state
   const [sourceLangId, setSourceLangId] = useState<string>('hi')
-  const [targetLangId, setTargetLangId] = useState<string>('kru')
+  const [targetLangId, setTargetLangId] = useState<string>('sat')
   const [showSourceDropdown, setShowSourceDropdown] = useState(false)
   const [showTargetDropdown, setShowTargetDropdown] = useState(false)
 
@@ -145,7 +146,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
   }, [messages, isThinking])
 
   const sourceLang = getLanguageById(sourceLangId) || getLanguageById('hi')
-  const targetLang = getLanguageById(targetLangId) || getLanguageById('kru')
+  const targetLang = getLanguageById(targetLangId) || getLanguageById('sat')
 
   const handleSwapLanguages = () => {
     const temp = sourceLangId
@@ -160,7 +161,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
     setHistoryOpen(false)
   }
 
-  const handleSendMessage = (e?: React.FormEvent) => {
+  const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
     const query = inputQuery.trim()
     if (!query) return
@@ -176,23 +177,26 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
     setInputQuery('')
     setIsThinking(true)
 
-    // Simulate intelligent educational BhashaMitra response with dynamic visual
-    setTimeout(() => {
+    try {
+      // Real translation via centralized translator service
+      const translated = await translateTextAuto({
+        text: query,
+        sourceLanguageId: sourceLangId,
+        targetLanguageId: targetLangId,
+      })
+
       let aiText = `Here is the explanation for "${query}" synthesized for your learning level.`
-      let translationText = `अनुवाद (${targetLang?.name || 'Kurukh'}): ${query} गहि माने अरा सांचा समझना।`
       let visualUrl = 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80'
-      let visualTitle = 'Multilingual Concept Structure'
-      let visualDesc = `Adaptive conceptual breakdown from ${sourceLang?.name} to ${targetLang?.name}.`
+      let visualTitle = `${targetLang?.name || 'Regional'} Concept Synthesis`
+      let visualDesc = `Adaptive conceptual breakdown from ${sourceLang?.name} into ${targetLang?.name} (${targetLang?.regions?.join(', ') || ''}).`
 
       if (/gravity|गुरुत्वाकर्षण/i.test(query)) {
         aiText = 'गुरुत्वाकर्षण (Gravity) ब्रह्मांड के किन्हीं दो द्रव्यमानों के बीच लगने वाला आकर्षण बल है।'
-        translationText = 'कुड़ुख अनुवाद: गुरुत्वाकर्षण पृथ्वी गहि अद्दे ताक़त तली जेती हर चीज़ एड़ता तिन ख़िचड़ी।'
         visualUrl = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
         visualTitle = 'Gravitational Curvature of Spacetime'
         visualDesc = 'Mass warping spatial geometry causing universal orbital attraction.'
       } else if (/cell|कोशिका/i.test(query)) {
         aiText = 'कोशिका (Cell) जीवन की सबसे छोटी संरचनात्मक और कार्यात्मक इकाई है।'
-        translationText = 'कुड़ुख अनुवाद: सेल (कोशिका) उज्जना गहि सबसे सानी टुकड़ी तली।'
         visualUrl = 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80'
         visualTitle = 'Cellular Organelles & Membrane Dynamics'
         visualDesc = 'Mitochondria, nucleus, and cytoplasm coordinating life processes.'
@@ -202,7 +206,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
         id: `ai-${Date.now()}`,
         sender: 'ai',
         text: aiText,
-        translation: translationText,
+        translation: `अनुवाद (${targetLang?.name}): ${translated}`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         visualUrl,
         visualTitle,
@@ -210,8 +214,11 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
       }
 
       setMessages((prev) => [...prev, aiMsg])
+    } catch (err) {
+      console.error('Error generating AI explanation:', err)
+    } finally {
       setIsThinking(false)
-    }, 1100)
+    }
   }
 
   return (
@@ -333,7 +340,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
 
           {showSourceDropdown && (
             <div
-              className={`absolute left-0 top-full mt-2 w-48 max-h-56 overflow-y-auto rounded-2xl border z-50 p-1.5 shadow-2xl backdrop-blur-xl ${
+              className={`absolute left-0 top-full mt-2 w-64 max-h-64 overflow-y-auto rounded-2xl border z-50 p-1.5 shadow-2xl backdrop-blur-xl ${
                 isDarkMode ? 'bg-[#141418] border-white/[0.08]' : 'bg-[#FAFAF8] border-black/[0.08]'
               }`}
             >
@@ -350,8 +357,11 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
                       : 'hover:bg-black/[0.04] dark:hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{lang.nativeName} ({lang.name})</span>
-                  {sourceLangId === lang.id && <Check size={13} />}
+                  <div className="flex flex-col min-w-0 pr-2">
+                    <span className="font-semibold">{lang.name} ({lang.nativeName})</span>
+                    <span className="text-[10px] opacity-60 truncate">{lang.regions.join(', ')}</span>
+                  </div>
+                  {sourceLangId === lang.id && <Check size={13} className="shrink-0" />}
                 </button>
               ))}
             </div>
@@ -391,7 +401,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
 
           {showTargetDropdown && (
             <div
-              className={`absolute right-0 top-full mt-2 w-48 max-h-56 overflow-y-auto rounded-2xl border z-50 p-1.5 shadow-2xl backdrop-blur-xl ${
+              className={`absolute right-0 top-full mt-2 w-64 max-h-64 overflow-y-auto rounded-2xl border z-50 p-1.5 shadow-2xl backdrop-blur-xl ${
                 isDarkMode ? 'bg-[#141418] border-white/[0.08]' : 'bg-[#FAFAF8] border-black/[0.08]'
               }`}
             >
@@ -408,8 +418,11 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
                       : 'hover:bg-black/[0.04] dark:hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{lang.nativeName} ({lang.name})</span>
-                  {targetLangId === lang.id && <Check size={13} />}
+                  <div className="flex flex-col min-w-0 pr-2">
+                    <span className="font-semibold">{lang.name} ({lang.nativeName})</span>
+                    <span className="text-[10px] opacity-60 truncate">{lang.regions.join(', ')}</span>
+                  </div>
+                  {targetLangId === lang.id && <Check size={13} className="shrink-0" />}
                 </button>
               ))}
             </div>

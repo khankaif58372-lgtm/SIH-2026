@@ -14,7 +14,7 @@ const MOCK_TEACHERS: Teacher[] = [
     id: 'teacher-001',
     name: 'Priya Nair',
     school: 'Government Primary School, Pune',
-    languagesSupported: ['hi', 'mr', 'en'],
+    languagesSupported: ['sat', 'kru', 'bhili', 'bhilodi', 'gon', 'as', 'brx', 'kha', 'kokborok', 'kui', 'hi', 'en'],
     studentIds: ['student-001'],
     createdAt: new Date().toISOString(),
   },
