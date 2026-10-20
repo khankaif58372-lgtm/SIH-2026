@@ -5,7 +5,7 @@ import type { Language } from '../types'
  * Tailored for rural and regional-language primary & secondary learners across India (Unveishna 2026).
  *
  * Preserves English and Hindi for foundational interface and source-language functionality,
- * while providing dedicated support for 10 verified tribal and regional languages:
+ * while providing dedicated support for 9 verified tribal and regional languages:
  * 1. Santali
  * 2. Kurukh
  * 3. Bhili
@@ -15,7 +15,6 @@ import type { Language } from '../types'
  * 7. Bodo
  * 8. Khasi
  * 9. Kokborok
- * 10. Kui (replaces Odia)
  */
 export const LANGUAGES: Language[] = [
   // ── Source & Universal Academic Languages ───────────────────────────────────
@@ -163,19 +162,6 @@ export const LANGUAGES: Language[] = [
     sttSupport: 'unsupported',
     ttsSupport: 'unsupported',
     notes: 'Tibeto-Burman official state language of Tripura spoken by the Borok people.',
-  },
-  {
-    id: 'kui',
-    name: 'Kui',
-    nativeName: 'କୁଇ',
-    locale: 'kxu-IN',
-    script: 'Odia / Devanagari',
-    regions: ['Odisha (Kandhamal)'],
-    isTribal: true,
-    translationSupport: 'phrasebook',
-    sttSupport: 'unsupported',
-    ttsSupport: 'unsupported',
-    notes: 'South-Central Dravidian language of the Kandha (Kondh) community in Odisha, especially Kandhamal.',
   },
 ]
 

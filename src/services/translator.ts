@@ -5,7 +5,7 @@
  * Integrates:
  * 1. Dedicated Kurukh Translation Engine (kurukhTranslator.ts)
  * 2. Curated Tribal Dictionaries & Phrasebooks (tribalDictionaries.ts) for:
- *    Santali, Bhili, Bhilodi, Gondi, Bodo, Khasi, Kokborok, Kui
+ *    Santali, Bhili, Bhilodi, Gondi, Bodo, Khasi, Kokborok
  * 3. MyMemory API & dictionaries for English, Hindi, and Assamese.
  * 4. Honest linguistic status reporting — never spoof tribal translations.
  */

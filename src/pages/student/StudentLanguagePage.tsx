@@ -23,7 +23,6 @@ const CONFIRMATION_MESSAGES: Record<string, string> = {
   brx: 'खुलुमबाय! बड़ो रावजों सोलोंथाय लानो बरायबाय।',
   kha: 'Khublei! Pdiang sngewbha sha ka jingpule ha ka ktien Khasi.',
   kokborok: 'Khulumkha! Kokborok bai rwngmung no borom rwkha.',
-  kui: 'ଜୁହାର! କୁଇ କାଥା ତେ ପାଠ ପଡିପା ସ୍ୱାଗତ।',
   hi: 'नमस्ते! अब मैं आपकी मातृभाषा में सीखने में आपकी पूरी मदद करूँगा।',
   en: 'Welcome! I will now guide your learning in English.',
 }

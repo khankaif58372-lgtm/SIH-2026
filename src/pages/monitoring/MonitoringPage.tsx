@@ -32,7 +32,6 @@ const SPEECH_LOCALES: Record<string, string> = {
   brx: 'hi-IN',
   kha: 'en-IN',
   kokborok: 'bn-IN',
-  kui: 'hi-IN',
 }
 
 export function MonitoringPage() {

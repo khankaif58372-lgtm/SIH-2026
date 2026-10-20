@@ -12,7 +12,6 @@
  * - Bodo (brx) — Devanagari
  * - Khasi (kha) — Latin
  * - Kokborok (kokborok) — Bengali / Latin
- * - Kui (kui) — Odia / Devanagari
  */
 
 export const TRIBAL_DICTIONARIES: Record<string, Record<string, string>> = {
@@ -336,51 +335,7 @@ export const TRIBAL_DICTIONARIES: Record<string, Record<string, string>> = {
     'earth': 'Haa',
   },
 
-  // ── 8. Kui (kui) — Odia Script (Kandhamal, Odisha) ──────────────────────────
-  kui: {
-    'hello': 'କୁଇ ଜୁହାର (Juhar)',
-    'hi': 'ଜୁହାର',
-    'namaste': 'ଜୁହାର',
-    'नमस्ते': 'ଜୁହାର',
-    'good morning': 'କୁଇ ସକାଳ ଜୁହାର',
-    'welcome': 'ସ୍ୱାଗତ ମାଞ୍ଜୁ',
-    'thank you': 'ଜୁହାର / ଧନ୍ୟବାଦ',
-    'thanks': 'ଜୁହାର',
-    'धन्यवाद': 'ଜୁହାର / ଧନ୍ୟବାଦ',
-    'yes': 'ଆଉ',
-    'no': 'ଆମ୍ବେ',
-    'हाँ': 'ଆଉ',
-    'नहीं': 'ଆମ୍ବେ',
-
-    'how are you?': 'ଏସ୍ତାକି ମାଞ୍ଜି?',
-    'how are you': 'ଏସ୍ତାକି ମାଞ୍ଜି?',
-    'आप कैसे हैं?': 'ଏସ୍ତାକି ମାଞ୍ଜି?',
-    'what is your name?': 'ନୀ ତୋର୍ଣା ଆନା?',
-    'what is your name': 'ନୀ ତୋର୍ଣା ଆନା?',
-    'आपका नाम क्या है?': 'ନୀ ତୋର୍ଣା ଆନା?',
-    'i am fine': 'ନାନୁ ବେସି ମାଞ୍ଜାଇ',
-    'मैं ठीक हूँ': 'ନାନୁ ବେସି ମାଞ୍ଜାଇ',
-    'what is this?': 'ଇଦି ଆନା ଆଞ୍ଜେ?',
-    'यह क्या है?': 'ଇଦି ଆନା ଆଞ୍ଜେ?',
-
-    'learning': 'କାର୍ପା (Karpa)',
-    'education': 'ପଡିପା (Padipa)',
-    'school': 'ସ୍କୁଲ',
-    'teacher': 'ଗୁରୁ',
-    'student': 'ପଡିଓସି',
-    'science': 'ବିଜ୍ଞାନ',
-    'mathematics': 'ହିସାବ / ଲେଖା',
-    'math': 'ହିସାବ',
-    'language': 'କୁଇ କାଥା (Kui Kaatha)',
-    'book': 'ପୋଥି',
-    'knowledge': 'ଗିୟାନ୍',
-    'water': 'ଏସ୍',
-    'sun': 'ବେଲା',
-    'tree': 'ମାଡ଼ି',
-    'earth': 'ଧରତି',
-  },
-
-  // ── 9. Assamese (as) — Bengali-Assamese Script ──────────────────────────────
+  // ── 8. Assamese (as) — Bengali-Assamese Script ──────────────────────────────
   as: {
     'hello': 'নমস্কাৰ',
     'hi': 'নমস্কাৰ',

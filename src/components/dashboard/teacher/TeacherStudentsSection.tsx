@@ -51,13 +51,13 @@ const INITIAL_STUDENTS: StudentRecord[] = [
   },
   {
     id: 'STU-2026-04',
-    name: 'Laxmi Majhi',
-    motherTongue: 'Kui',
-    motherTongueScript: 'କୁଇ',
+    name: 'Somaru Markam',
+    motherTongue: 'Gondi',
+    motherTongueScript: 'गोंडी',
     accuracies: [
-      { language: 'Kui', percentage: 94 },
-      { language: 'Hindi', percentage: 82 },
-      { language: 'English', percentage: 85 },
+      { language: 'Gondi', percentage: 94 },
+      { language: 'Hindi', percentage: 84 },
+      { language: 'English', percentage: 80 },
     ],
   },
   {

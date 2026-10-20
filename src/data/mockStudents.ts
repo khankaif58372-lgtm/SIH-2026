@@ -40,9 +40,9 @@ export const MOCK_STUDENTS: Student[] = [
   },
   {
     id: 'student-004',
-    name: 'Subhadra Mallick',
+    name: 'Somaru Markam',
     grade: 3,
-    languageId: 'kui',
+    languageId: 'gon',
     progress: [],
     createdAt: '2026-07-01T00:00:00Z',
   },

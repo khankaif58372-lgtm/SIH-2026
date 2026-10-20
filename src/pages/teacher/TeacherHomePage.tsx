@@ -31,7 +31,7 @@ const languageDistribution = [
   { name: 'Hindi', students: 45, color: '#06b6d4' },
   { name: 'Santali', students: 28, color: '#8b5cf6' },
   { name: 'Kurukh', students: 22, color: '#10b981' },
-  { name: 'Kui', students: 18, color: '#f59e0b' },
+  { name: 'Gondi', students: 18, color: '#f59e0b' },
   { name: 'Bhili', students: 15, color: '#ec4899' },
 ]
 

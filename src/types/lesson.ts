@@ -15,7 +15,6 @@ export interface LessonTranslations {
   brx?: LessonTranslation
   kha?: LessonTranslation
   kokborok?: LessonTranslation
-  kui?: LessonTranslation
   hi?: LessonTranslation
   [languageId: string]: LessonTranslation | undefined
 }

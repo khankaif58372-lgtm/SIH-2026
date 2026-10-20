@@ -23,7 +23,6 @@ const SHARD_TEXTS = [
   { text: 'सोलोंथाय', lang: 'Bodo' },
   { text: 'Jingstad', lang: 'Khasi' },
   { text: 'ককবরক', lang: 'Kokborok' },
-  { text: 'କୁଇ', lang: 'Kui' },
   { text: 'शिक्षा', lang: 'Hindi' },
   { text: 'Learning', lang: 'English' },
 ]
