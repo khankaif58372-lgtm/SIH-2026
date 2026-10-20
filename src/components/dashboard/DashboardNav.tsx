@@ -49,7 +49,7 @@ export function DashboardNav({
             to="/"
             className="font-display text-base sm:text-lg font-bold tracking-tight hover:opacity-80 transition-opacity"
           >
-            Vernacular AI
+            BhashaMitra
           </Link>
 
           <span className="text-black/20 dark:text-white/20 text-xs hidden sm:inline">/</span>

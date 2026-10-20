@@ -71,7 +71,7 @@ export function StudentLoginPage() {
   return (
     <AuthPageLayout
       eyebrow="STUDENT"
-      heading="Welcome to Vernacular AI."
+      heading="Welcome to BhashaMitra."
       supportingText="Let's personalize your learning experience."
     >
       {isSuccess ? (
@@ -89,7 +89,7 @@ export function StudentLoginPage() {
               Profile Verified
             </h3>
             <p className="text-xs text-[#6F6F6A] dark:text-[#A3A39E]">
-              Welcome, {name}. Your vernacular profile is ready.
+              Welcome, {name}. Your BhashaMitra profile is ready.
             </p>
           </div>
 

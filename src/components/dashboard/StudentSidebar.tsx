@@ -14,7 +14,7 @@ interface StudentSidebarProps {
 const NAV_ITEMS: { id: DashboardSectionId; label: string; icon: typeof Home; subtitle: string }[] = [
   { id: 'home', label: 'HOME', icon: Home, subtitle: 'Student Overview' },
   { id: 'your-ai', label: 'YOUR AI', icon: Sparkles, subtitle: 'Adaptive Learning Assistant' },
-  { id: 'lessons', label: 'LESSONS', icon: BookOpen, subtitle: 'Multilingual Curriculum' },
+  { id: 'lessons', label: 'SUBJECTS', icon: BookOpen, subtitle: 'Multilingual Curriculum' },
 ]
 
 export function StudentSidebar({
@@ -58,7 +58,7 @@ export function StudentSidebar({
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
                 <span className="font-display font-bold text-sm tracking-tight whitespace-nowrap">
-                  Vernacular AI
+                  BhashaMitra
                 </span>
               </div>
             ) : (

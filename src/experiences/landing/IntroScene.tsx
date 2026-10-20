@@ -37,7 +37,7 @@ export function IntroScene() {
         className="pt-4 sm:pt-6"
       >
         <span className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-[#737373]">
-          Vernacular Intelligence
+          BhashaMitra Intelligence
         </span>
       </motion.div>
 
@@ -51,12 +51,12 @@ export function IntroScene() {
       >
         {/* Dominant Primary Brand Title */}
         <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tight text-[#171717] leading-[0.95] select-none">
-          VERNACULAR AI
+          BhashaMitra
         </h1>
 
         {/* Elegant Secondary Headline */}
         <p className="font-serif text-2xl sm:text-4xl md:text-5xl font-normal text-[#404040] tracking-tight leading-tight">
-          Intelligence in your language.
+          Where Language Meets Learning.
         </p>
 
         {/* Small Supporting Description */}

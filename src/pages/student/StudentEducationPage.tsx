@@ -301,7 +301,7 @@ export function StudentEducationPage() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 text-center py-4 text-xs text-slate-400">
-        Vernacular AI · Cognitive Calibrated Learning
+        BhashaMitra · Cognitive Calibrated Learning
       </footer>
     </div>
   )

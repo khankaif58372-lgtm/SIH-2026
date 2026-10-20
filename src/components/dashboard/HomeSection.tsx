@@ -86,7 +86,7 @@ export function HomeSection({ onNavigateToYourAI, onNavigateToLessons }: HomeSec
                 ID: <span className="font-mono text-[#171717] dark:text-[#F5F5F5] font-semibold">{studentId}</span>
               </p>
               <p className={`text-xs ${isDarkMode ? 'text-[#737373]' : 'text-[#A3A39E]'}`}>
-                Cohort 2026 · Secondary Level (Class 10) · Vernacular AI Network
+                Cohort 2026 · Secondary Level (Class 10) · BhashaMitra Network
               </p>
             </div>
           </div>
@@ -133,7 +133,7 @@ export function HomeSection({ onNavigateToYourAI, onNavigateToLessons }: HomeSec
             </p>
           </motion.div>
 
-          {/* Tile 2: Jump to LESSONS */}
+          {/* Tile 2: Jump to SUBJECTS */}
           <motion.div
             whileHover={{ y: -2 }}
             onClick={onNavigateToLessons}
@@ -150,7 +150,7 @@ export function HomeSection({ onNavigateToYourAI, onNavigateToLessons }: HomeSec
               <ArrowRight size={16} className="text-[#A3A39E]" />
             </div>
             <h3 className="font-display text-lg font-bold tracking-tight mb-1">
-              Explore Lessons
+              Explore Subjects
             </h3>
             <p className={`text-xs ${isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'}`}>
               Interactive subject marquees across Physics, Math, Chemistry, and Languages.

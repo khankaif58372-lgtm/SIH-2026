@@ -52,9 +52,9 @@ export function AuthNav({ onBack }: AuthNavProps) {
           <button
             onClick={handleBack}
             className="font-display text-lg sm:text-xl font-bold tracking-tight focus:outline-none cursor-pointer"
-            aria-label="Vernacular AI"
+            aria-label="BhashaMitra"
           >
-            Vernacular AI
+            BhashaMitra
           </button>
         </div>
 

@@ -217,7 +217,7 @@ export function AdaptiveLearningDemo() {
           One Question. <span className="gradient-text-cyan">Infinite Adaptations.</span>
         </h2>
         <p className="text-secondary sm:text-base max-w-xl mx-auto mt-2 text-slate-400">
-          Switch education levels or languages below to see how Vernacular AI dynamically calibrates explanation depth, vocabulary, and conceptual frameworks.
+          Switch education levels or languages below to see how BhashaMitra dynamically calibrates explanation depth, vocabulary, and conceptual frameworks.
         </p>
       </div>
 

@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Sun, Moon, Search } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
 export function LandingNav() {
+  const navigate = useNavigate()
   const { voiceEnabled, setVoiceEnabled, isDarkMode, setIsDarkMode } = useAppStore()
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -31,10 +33,10 @@ export function LandingNav() {
         <button
           onClick={() => scrollToSection('hero')}
           className="group flex items-center gap-2 text-left focus:outline-none cursor-pointer"
-          aria-label="Vernacular AI"
+          aria-label="BhashaMitra"
         >
           <span className="font-display text-lg sm:text-xl font-bold tracking-tight">
-            Vernacular AI
+            BhashaMitra
           </span>
         </button>
 
@@ -55,6 +57,12 @@ export function LandingNav() {
             }`}
           >
             Pathway
+          </button>
+          <button
+            onClick={() => navigate('/monitoring')}
+            className="text-emerald-600 dark:text-emerald-400 font-bold transition-colors cursor-pointer hover:opacity-80"
+          >
+            Monitoring
           </button>
           <button
             onClick={() => scrollToSection('about')}

@@ -14,7 +14,7 @@ interface TeacherSidebarProps {
 const NAV_ITEMS: { id: TeacherSectionId; label: string; icon: typeof Home; subtitle: string }[] = [
   { id: 'home', label: 'HOME', icon: Home, subtitle: 'Educator Overview' },
   { id: 'students', label: 'STUDENTS', icon: Users, subtitle: 'Class Roster & Accuracy' },
-  { id: 'lessons', label: 'LESSONS', icon: BookOpen, subtitle: 'Curriculum & Info Input' },
+  { id: 'lessons', label: 'SUBJECTS', icon: BookOpen, subtitle: 'Curriculum & Info Input' },
 ]
 
 export function TeacherSidebar({
@@ -58,7 +58,7 @@ export function TeacherSidebar({
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
                 <span className="font-display font-bold text-sm tracking-tight whitespace-nowrap">
-                  Vernacular AI
+                  BhashaMitra
                 </span>
               </div>
             ) : (

@@ -53,7 +53,7 @@ export function HeroSection() {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
           </span>
           <span className="text-xs font-semibold tracking-wide text-slate-200">
-            VERNACULAR AI <span className="text-slate-500 font-normal">·</span> Next-Gen Regional Pedagogy
+            BhashaMitra <span className="text-slate-500 font-normal">·</span> Next-Gen Regional Pedagogy
           </span>
         </motion.div>
 

@@ -119,8 +119,8 @@ export function AuthPageLayout({
             : 'border-black/[0.05] text-[#A3A39E] bg-[#F6F5F1]'
         }`}
       >
-        <p className="font-medium text-xs text-inherit">Vernacular AI</p>
-        <p className="text-[11px] opacity-60">"AI-powered vernacular learning." · © 2026</p>
+        <p className="font-medium text-xs text-inherit">BhashaMitra</p>
+        <p className="text-[11px] opacity-60">"AI-powered BhashaMitra learning." · © 2026</p>
       </footer>
     </div>
   )

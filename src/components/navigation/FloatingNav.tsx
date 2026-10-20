@@ -33,10 +33,10 @@ export function FloatingNav() {
         <button
           onClick={() => navigate('/')}
           className="group flex items-center gap-2.5 text-left focus-visible:outline-none cursor-pointer"
-          aria-label="Vernacular AI Home"
+          aria-label="BhashaMitra Home"
         >
           <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-[#171717] group-hover:text-indigo-950 transition-colors">
-            Vernacular AI
+            BhashaMitra
           </span>
         </button>
 

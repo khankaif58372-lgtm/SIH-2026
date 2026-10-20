@@ -1,16 +1,33 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useAppStore } from './store/useAppStore'
 import { LandingExperience } from './experiences/landing'
 import { StudentLoginPage } from './pages/auth/StudentLoginPage'
 import { TeacherLoginPage } from './pages/auth/TeacherLoginPage'
 import { StudentDashboardPage } from './pages/student/StudentDashboardPage'
 import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage'
+import { MonitoringPage } from './pages/monitoring/MonitoringPage'
 
 export default function App() {
+  const { isDarkMode } = useAppStore()
+
+  // Sync dark class on document root whenever isDarkMode changes
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [isDarkMode])
+
   return (
     <BrowserRouter>
       <Routes>
         {/* ── Single Premium Cinematic Landing Page ──────────────────── */}
         <Route path="/" element={<LandingExperience />} />
+
+        {/* ── Dedicated Monitoring Feature (Public Direct Access) ───── */}
+        <Route path="/monitoring" element={<MonitoringPage />} />
 
         {/* ── Dedicated Cinematic Login Experiences ───────────────────── */}
         <Route path="/login/student" element={<StudentLoginPage />} />

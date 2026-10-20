@@ -134,7 +134,7 @@ export function RoleSelectPage() {
           aria-label="Back to home"
         >
           <ChevronLeft size={16} />
-          Back to Vernacular AI
+          Back to BhashaMitra
         </button>
       </div>
 
@@ -145,7 +145,7 @@ export function RoleSelectPage() {
           <motion.div variants={staggerItem} className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs text-slate-300 shadow-glass-subtle">
               <Sparkles size={12} className="text-cyan-400" aria-hidden="true" />
-              Vernacular AI Experience Selection
+              BhashaMitra Experience Selection
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
               Choose your path

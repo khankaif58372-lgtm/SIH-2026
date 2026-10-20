@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Users, BookOpen, ArrowRight, ShieldCheck, School } from 'lucide-react'
 import { useAppStore } from '../../../store/useAppStore'
+import { YourAISection } from '../YourAISection'
 
 interface TeacherHomeSectionProps {
   onNavigateToStudents: () => void
@@ -16,7 +17,7 @@ export function TeacherHomeSection({
   const teacherName = currentTeacher?.name || 'Dr. Priya Kulkarni'
   const teacherId = currentTeacher?.id || 'TCH-2026-09'
   const classNameAssigned = 'Class 8 — A'
-  const schoolName = currentTeacher?.school || 'Vernacular Learning Academy'
+  const schoolName = currentTeacher?.school || 'BhashaMitra Learning Academy'
 
   // Derive initials for avatar monogram
   const initials = teacherName
@@ -87,7 +88,7 @@ export function TeacherHomeSection({
                 ID: <span className="font-mono text-[#171717] dark:text-[#F5F5F5] font-semibold">{teacherId}</span>
               </p>
               <p className={`text-xs ${isDarkMode ? 'text-[#737373]' : 'text-[#A3A39E]'}`}>
-                {schoolName} · Vernacular Regional Education Portal
+                {schoolName} · BhashaMitra Regional Education Portal
               </p>
             </div>
           </div>
@@ -153,7 +154,7 @@ export function TeacherHomeSection({
               <ArrowRight size={16} className="text-[#A3A39E]" />
             </div>
             <h3 className="font-display text-lg font-bold tracking-tight mb-1">
-              Curriculum & Lessons
+              Curriculum & Subjects
             </h3>
             <p className={`text-xs ${isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'}`}>
               Feed educational info and review subject modules moving across regional languages.
@@ -163,6 +164,9 @@ export function TeacherHomeSection({
         </div>
 
       </div>
+
+      {/* ── Teacher AI Chat Assistant Toolkit Section ── */}
+      <YourAISection context="teacher" />
 
     </section>
   )

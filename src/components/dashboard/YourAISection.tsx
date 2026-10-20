@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { LANGUAGES, getLanguageById } from '../../data/languages'
 import { useAppStore } from '../../store/useAppStore'
+import { FeedbackButtons } from '../common/FeedbackButtons'
 
 interface ChatMessage {
   id: string
@@ -105,7 +106,11 @@ const INITIAL_HISTORY: HistoryItem[] = [
   },
 ]
 
-export function YourAISection() {
+interface YourAISectionProps {
+  context?: 'student' | 'teacher'
+}
+
+export function YourAISection({ context = 'student' }: YourAISectionProps) {
   const { isDarkMode, voiceEnabled, setVoiceEnabled } = useAppStore()
 
   // Languages selection state
@@ -171,7 +176,7 @@ export function YourAISection() {
     setInputQuery('')
     setIsThinking(true)
 
-    // Simulate intelligent educational Vernacular AI response with dynamic visual
+    // Simulate intelligent educational BhashaMitra response with dynamic visual
     setTimeout(() => {
       let aiText = `Here is the explanation for "${query}" synthesized for your learning level.`
       let translationText = `अनुवाद (${targetLang?.name || 'Kurukh'}): ${query} गहि माने अरा सांचा समझना।`
@@ -456,6 +461,11 @@ export function YourAISection() {
                     <div className="mt-3 pt-2.5 border-t border-black/[0.06] dark:border-white/[0.08] text-xs font-serif italic text-cyan-800 dark:text-cyan-200">
                       {msg.translation}
                     </div>
+                  )}
+
+                  {/* Feedback System (👍 / 👎) */}
+                  {msg.sender === 'ai' && (
+                    <FeedbackButtons responseId={msg.id} context={context} />
                   )}
                 </div>
 

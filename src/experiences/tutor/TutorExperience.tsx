@@ -37,7 +37,7 @@ export function TutorExperience() {
     {
       id: 'welcome-msg',
       role: 'assistant',
-      content: `नमस्ते! I am your Vernacular AI Tutor. I am calibrated for ${lang?.name ?? 'your language'} at ${levelInfo.title} level (${levelInfo.grades}). Ask me any concept or lesson!`,
+      content: `नमस्ते! I am your BhashaMitra Tutor. I am calibrated for ${lang?.name ?? 'your language'} at ${levelInfo.title} level (${levelInfo.grades}). Ask me any concept or lesson!`,
       timestamp: new Date().toISOString(),
     },
   ])
@@ -206,7 +206,7 @@ export function TutorExperience() {
                 {!isUser && (
                   <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/[0.05] text-[11px] text-cyan-300 font-semibold">
                     <Sparkles size={12} className="text-cyan-400" />
-                    <span>Vernacular AI Tutor</span>
+                    <span>BhashaMitra Tutor</span>
                   </div>
                 )}
 

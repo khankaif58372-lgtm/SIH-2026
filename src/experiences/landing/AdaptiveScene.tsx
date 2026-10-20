@@ -252,7 +252,7 @@ export function AdaptiveScene() {
             Same question. Different level-appropriate explanation.
           </h2>
           <p className="font-serif text-base sm:text-lg text-[#525252] max-w-lg mx-auto">
-            Experience how Vernacular AI instantly shifts explanation models from elementary stories to research mechanics.
+            Experience how BhashaMitra instantly shifts explanation models from elementary stories to research mechanics.
           </p>
         </div>
 

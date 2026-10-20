@@ -62,7 +62,7 @@ export function HomePage() {
               Learn differently. <span className="gradient-text">One question, infinite ways to understand.</span>
             </h2>
             <p className="text-secondary sm:text-base text-slate-400">
-              Traditional education forces every child into one uniform explanation. Vernacular AI calibrates the depth, dialect, and metaphors to exactly match the learner's background.
+              Traditional education forces every child into one uniform explanation. BhashaMitra calibrates the depth, dialect, and metaphors to exactly match the learner's background.
             </p>
           </motion.div>
 
@@ -204,7 +204,7 @@ export function HomePage() {
 
       {/* ── Clean Footer ── */}
       <footer className="relative z-10 border-t border-white/[0.06] py-8 px-4 text-center text-xs text-slate-500">
-        <p>© 2026 Vernacular AI · Mother Tongue-Based Primary Education · SIH 2026</p>
+        <p>© 2026 BhashaMitra · Mother Tongue-Based Primary Education · SIH 2026</p>
       </footer>
     </div>
   )

@@ -47,7 +47,7 @@ export function TeacherDashboardPage() {
   const sectionTitles: Record<TeacherSectionId, string> = {
     home: 'HOME',
     students: 'STUDENTS',
-    lessons: 'LESSONS',
+    lessons: 'SUBJECTS',
   }
 
   return (
@@ -122,8 +122,8 @@ export function TeacherDashboardPage() {
               : 'border-black/[0.05] text-[#A3A39E] bg-[#F6F5F1]/80'
           }`}
         >
-          <p className="font-semibold text-xs text-inherit">Vernacular AI · Teacher Workspace</p>
-          <p className="text-[11px] opacity-60">"AI-powered vernacular learning." · © 2026</p>
+          <p className="font-semibold text-xs text-inherit">BhashaMitra · Teacher Workspace</p>
+          <p className="text-[11px] opacity-60">"Where Language Meets Learning." · © 2026</p>
         </footer>
       </motion.div>
     </div>

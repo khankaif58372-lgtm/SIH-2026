@@ -109,7 +109,7 @@ export function StudentLanguagePage() {
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold uppercase tracking-wider shadow-glass-subtle mb-1">
             <Globe size={13} className="text-cyan-400" />
-            Vernacular AI Onboarding
+            BhashaMitra Onboarding
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Choose your language
@@ -227,7 +227,7 @@ export function StudentLanguagePage() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 text-center py-4 text-xs text-slate-400">
-        Vernacular AI · Personalized Regional Onboarding
+        BhashaMitra · Personalized Regional Onboarding
       </footer>
     </div>
   )

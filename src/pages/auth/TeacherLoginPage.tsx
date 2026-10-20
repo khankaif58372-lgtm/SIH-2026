@@ -43,8 +43,8 @@ export function TeacherLoginPage() {
     setCurrentTeacher({
       id: teacherId.trim(),
       name: name.trim(),
-      email: `${teacherId.trim().toLowerCase()}@vernacular.edu`,
-      school: 'Vernacular Learning Academy',
+      email: `${teacherId.trim().toLowerCase()}@bhashamitra.edu`,
+      school: 'BhashaMitra Learning Academy',
       languagesSupported: ['hi', 'mr', 'en'],
       studentIds: [],
       createdAt: new Date().toISOString(),
@@ -64,7 +64,7 @@ export function TeacherLoginPage() {
   return (
     <AuthPageLayout
       eyebrow="TEACHER"
-      heading="Welcome to Vernacular AI."
+      heading="Welcome to BhashaMitra."
       supportingText="Let's personalize your teaching experience."
     >
       {isSuccess ? (

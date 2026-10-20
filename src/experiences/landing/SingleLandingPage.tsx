@@ -130,7 +130,7 @@ export function SingleLandingPage() {
                 }`}
               >
                 <Sparkles size={13} className="text-cyan-500" />
-                AI-POWERED VERNACULAR LEARNING
+                WHERE LANGUAGE MEETS LEARNING
               </span>
             </motion.div>
 
@@ -176,7 +176,7 @@ export function SingleLandingPage() {
                       : 'bg-[#FAFAF8] hover:bg-[#FFFFFF] border-black/[0.05] text-[#171717]'
                   }`}
                 >
-                  <span>Explore Vernacular AI</span>
+                  <span>Explore BhashaMitra</span>
                 </button>
               </div>
             </motion.div>
@@ -185,53 +185,110 @@ export function SingleLandingPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ delay: 0.8 }}
+              className="pt-12 sm:pt-16 flex flex-col items-center gap-2 text-xs opacity-50 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => scrollToSection('roles')}
-              className="flex flex-col items-center gap-1.5 cursor-pointer pt-6"
             >
-              <span className="text-[10px] font-medium tracking-[0.25em] uppercase opacity-50">
-                Scroll to explore
-              </span>
+              <span>Scroll to explore</span>
               <motion.div
                 animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                className="opacity-60"
+                transition={{ repeat: Infinity, duration: 1.8 }}
               >
-                <ChevronDown size={16} />
+                ↓
               </motion.div>
             </motion.div>
           </section>
 
 
           {/* ========================================================================= */}
-          {/* 2. SECOND SECTION — STUDENT OR TEACHER                                   */}
+          {/* 2. SECOND SECTION — DASHBOARD SELECTION (MONITORING / STUDENT / TEACHER)  */}
           {/* ========================================================================= */}
           <section
             id="roles"
-            className={`w-full py-24 sm:py-32 flex flex-col items-center text-center theme-transition ${
-              isDarkMode ? 'bg-[#0A0A0C]' : 'bg-[#F1F1EE]'
-            }`}
+            className="w-full max-w-6xl mx-auto px-6 sm:px-12 py-24 sm:py-32 flex flex-col items-center justify-center"
           >
-            <div className="max-w-6xl mx-auto px-6 sm:px-12 w-full space-y-12">
-              
-              <div className="space-y-3 max-w-2xl mx-auto">
+            <div className="w-full max-w-5xl text-center space-y-4 mb-16 sm:mb-20">
+              <div className="inline-flex flex-col items-center gap-2 mb-8">
                 <span
-                  className={`text-xs font-semibold uppercase tracking-[0.2em] ${
-                    isDarkMode ? 'text-indigo-400' : 'text-indigo-700'
+                  className={`text-xs font-semibold uppercase tracking-[0.25em] ${
+                    isDarkMode ? 'text-emerald-400' : 'text-emerald-700'
                   }`}
                 >
-                  Tailored Pathways
+                  Primary Feature & Pathways
                 </span>
                 <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight">
-                  How will you use Vernacular AI?
+                  How will you experience BhashaMitra?
                 </h2>
-                <p className={`text-sm sm:text-base ${isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'}`}>
-                  Select your pathway to experience adaptive learning tailored specifically for you.
+                <p className={`text-sm sm:text-base max-w-xl mx-auto ${isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'}`}>
+                  Access real-time language monitoring or select a workspace tailored specifically for you.
                 </p>
               </div>
 
-              {/* Large Floating Interactive Options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 w-full max-w-4xl mx-auto">
+              {/* ── 1. PRIMARY OPTION: MONITORING (PROMINENT RECTANGLE CARD AT TOP) ── */}
+              <motion.div
+                whileHover={{ y: -3, scale: 1.006 }}
+                whileTap={{ scale: 0.985 }}
+                onClick={() => navigate('/monitoring')}
+                className={`group relative w-full p-8 sm:p-10 rounded-3xl border text-left cursor-pointer theme-transition mb-8 ${
+                  isDarkMode
+                    ? 'bg-gradient-to-r from-emerald-500/10 via-white/[0.04] to-cyan-500/10 border-emerald-500/30 hover:border-emerald-400/60 shadow-glow-cyan-subtle ring-1 ring-emerald-500/20'
+                    : 'bg-gradient-to-r from-emerald-50/80 via-[#FAFAF8] to-cyan-50/80 border-emerald-500/40 hover:border-emerald-500 shadow-editorial-hover ring-1 ring-emerald-500/30'
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`p-4 rounded-2xl border ${
+                        isDarkMode
+                          ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-400'
+                          : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700'
+                      }`}
+                    >
+                      <Sparkles size={28} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                          PRIMARY FEATURE 01
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300">
+                          PUBLIC DIRECT ACCESS
+                        </span>
+                      </div>
+                      <h3 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-[#171717] dark:text-white">
+                        MONITORING DASHBOARD
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Primary CTA button indicator */}
+                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-all shrink-0">
+                    <span>Open Monitoring Screen</span>
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                <p
+                  className={`text-base sm:text-lg leading-relaxed max-w-3xl mb-6 ${
+                    isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'
+                  }`}
+                >
+                  "Real-time voice input, speech-to-text, automatic vernacular translation, and Kurukh language monitoring."
+                </p>
+
+                <div
+                  className={`pt-4 border-t text-xs sm:text-sm flex flex-wrap items-center gap-6 ${
+                    isDarkMode ? 'border-white/[0.08] text-[#A3A39E]' : 'border-black/[0.06] text-[#6F6F6A]'
+                  }`}
+                >
+                  <span>• Automatic speech-to-text & translation</span>
+                  <span>• Native Kurukh vernacular support</span>
+                  <span>• Toggleable text-to-speech audio</span>
+                </div>
+              </motion.div>
+
+              {/* ── 2. SECONDARY & TERTIARY OPTIONS: STUDENT & TEACHER (SIDE BY SIDE BELOW MONITORING ON DESKTOP) ── */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 w-full">
                 
                 {/* Student Card */}
                 <motion.div
@@ -276,10 +333,10 @@ export function SingleLandingPage() {
                   </div>
 
                   <span className="text-xs font-bold uppercase tracking-wider text-cyan-500 mb-1 block">
-                    PATHWAY 01
+                    PATHWAY 02
                   </span>
                   <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight mb-3">
-                    STUDENT
+                    STUDENT DASHBOARD
                   </h3>
                   <p
                     className={`text-base leading-relaxed mb-6 ${
@@ -348,10 +405,10 @@ export function SingleLandingPage() {
                   </div>
 
                   <span className="text-xs font-bold uppercase tracking-wider text-violet-500 mb-1 block">
-                    PATHWAY 02
+                    PATHWAY 03
                   </span>
                   <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight mb-3">
-                    TEACHER
+                    TEACHER DASHBOARD
                   </h3>
                   <p
                     className={`text-base leading-relaxed mb-6 ${
@@ -384,7 +441,7 @@ export function SingleLandingPage() {
 
 
           {/* ========================================================================= */}
-          {/* 3. THIRD SECTION — INFORMATION ABOUT VERNACULAR AI                        */}
+          {/* 3. THIRD SECTION — INFORMATION ABOUT BHASHAMITRA                          */}
           {/* ========================================================================= */}
           <section
             id="about"
@@ -392,17 +449,19 @@ export function SingleLandingPage() {
           >
             {/* Editorial Grand Statement */}
             <div className="max-w-3xl text-center space-y-6">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-cyan-500 block">
+                ABOUT BHASHAMITRA
+              </span>
               <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.08]">
-                One AI. <br />
-                Many languages. <br />
-                <span className="font-serif italic font-normal">A learning experience that adapts.</span>
+                Learn in the language <br className="hidden sm:inline" />
+                <span className="font-serif italic font-normal">that feels like home.</span>
               </h2>
               <p
                 className={`text-base sm:text-xl font-normal leading-relaxed ${
                   isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'
                 }`}
               >
-                Vernacular AI helps learners understand educational concepts in their preferred regional language while adapting explanations to their education level.
+                BhashaMitra makes learning more comfortable, accessible, and meaningful by bringing education closer to the language students understand best.
               </p>
             </div>
 
@@ -448,7 +507,7 @@ export function SingleLandingPage() {
               >
                 <span className="text-xs font-bold tracking-widest uppercase text-indigo-500">01</span>
                 <h3 className="font-display text-xl font-bold tracking-tight">
-                  Vernacular Learning
+                  BhashaMitra Learning
                 </h3>
                 <p
                   className={`text-sm leading-relaxed ${
@@ -546,7 +605,7 @@ export function SingleLandingPage() {
                   isDarkMode ? 'text-[#A3A39E]' : 'text-[#6F6F6A]'
                 }`}
               >
-                Vernacular AI
+                BhashaMitra
               </p>
               <p
                 className={`text-xs sm:text-sm max-w-sm mx-auto ${
@@ -580,9 +639,9 @@ export function SingleLandingPage() {
                 : 'border-black/[0.05] text-[#A3A39E] bg-[#F6F5F1]'
             }`}
           >
-            <p className="font-semibold text-sm tracking-tight text-inherit">Vernacular AI</p>
-            <p className="text-xs">"AI-powered vernacular learning."</p>
-            <p className="text-[11px] pt-2 opacity-60">© 2026 Vernacular AI. All rights reserved.</p>
+            <p className="font-semibold text-sm tracking-tight text-inherit">BhashaMitra</p>
+            <p className="text-xs">"AI-powered BhashaMitra learning."</p>
+            <p className="text-[11px] pt-2 opacity-60">© 2026 BhashaMitra. All rights reserved.</p>
           </footer>
 
         </motion.main>
