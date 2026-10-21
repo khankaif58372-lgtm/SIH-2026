@@ -352,7 +352,7 @@ export function FeedLessonModal({
                     >
                       {VERNACULAR_OPTIONS.map((lang) => (
                         <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
-                          {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                          {lang.name} ({lang.nativeName})
                         </option>
                       ))}
                     </select>
@@ -371,7 +371,6 @@ export function FeedLessonModal({
 
                 <div className="text-[11px] text-[#A3A39E] flex items-center gap-2">
                   <span>Script: <strong>{selectedVernacularObj.script}</strong></span>
-                  <span>• Regions: <strong>{selectedVernacularObj.regions.join(', ')}</strong></span>
                 </div>
 
                 <div>

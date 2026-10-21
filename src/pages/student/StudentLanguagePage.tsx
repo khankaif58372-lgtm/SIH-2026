@@ -171,9 +171,6 @@ export function StudentLanguagePage() {
                   {lang.name}
                 </span>
                 <span className="text-[10px] text-slate-400 mt-0.5">{lang.script}</span>
-                <span className="text-[9px] text-cyan-400/80 font-mono mt-0.5 max-w-[140px] text-center truncate" title={lang.regions.join(', ')}>
-                  {lang.regions.join(', ')}
-                </span>
 
                 {/* Explicit Audio Pronunciation Button */}
                 <button

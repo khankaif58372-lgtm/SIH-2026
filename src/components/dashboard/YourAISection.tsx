@@ -188,7 +188,7 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
       let aiText = `Here is the explanation for "${query}" synthesized for your learning level.`
       let visualUrl = 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80'
       let visualTitle = `${targetLang?.name || 'Regional'} Concept Synthesis`
-      let visualDesc = `Adaptive conceptual breakdown from ${sourceLang?.name} into ${targetLang?.name} (${targetLang?.regions?.join(', ') || ''}).`
+      let visualDesc = `Adaptive conceptual breakdown from ${sourceLang?.name} into ${targetLang?.name}.`
 
       if (/gravity|गुरुत्वाकर्षण/i.test(query)) {
         aiText = 'गुरुत्वाकर्षण (Gravity) ब्रह्मांड के किन्हीं दो द्रव्यमानों के बीच लगने वाला आकर्षण बल है।'
@@ -359,7 +359,6 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
                 >
                   <div className="flex flex-col min-w-0 pr-2">
                     <span className="font-semibold">{lang.name} ({lang.nativeName})</span>
-                    <span className="text-[10px] opacity-60 truncate">{lang.regions.join(', ')}</span>
                   </div>
                   {sourceLangId === lang.id && <Check size={13} className="shrink-0" />}
                 </button>
@@ -420,7 +419,6 @@ export function YourAISection({ context = 'student' }: YourAISectionProps) {
                 >
                   <div className="flex flex-col min-w-0 pr-2">
                     <span className="font-semibold">{lang.name} ({lang.nativeName})</span>
-                    <span className="text-[10px] opacity-60 truncate">{lang.regions.join(', ')}</span>
                   </div>
                   {targetLangId === lang.id && <Check size={13} className="shrink-0" />}
                 </button>

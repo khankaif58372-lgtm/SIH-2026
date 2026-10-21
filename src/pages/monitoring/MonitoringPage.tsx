@@ -404,7 +404,7 @@ export function MonitoringPage() {
               </option>
               {LANGUAGES.map((lang) => (
                 <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
-                  {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                  {lang.name} ({lang.nativeName})
                 </option>
               ))}
             </select>
@@ -429,14 +429,14 @@ export function MonitoringPage() {
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.id} value={lang.id} className="dark:bg-[#141418] text-black dark:text-white">
-                  {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                  {lang.name} ({lang.nativeName})
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* ── Verified Language & Regional Metadata Strip ── */}
+        {/* ── Verified Language Metadata Strip ── */}
         <div
           className={`px-5 py-3.5 rounded-2xl border text-xs flex flex-wrap items-center justify-between gap-3 theme-transition ${
             isDarkMode ? 'bg-[#141418]/60 border-white/[0.06] text-[#A3A39E]' : 'bg-white/80 border-black/[0.05] text-[#6F6F6A]'
@@ -448,9 +448,6 @@ export function MonitoringPage() {
             </span>
             <span className="text-[11px] opacity-70">
               • Script: {targetLanguageObj.script}
-            </span>
-            <span className="text-[11px] opacity-70">
-              • Regions: {targetLanguageObj.regions.join(', ')}
             </span>
           </div>
 

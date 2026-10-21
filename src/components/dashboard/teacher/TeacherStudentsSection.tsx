@@ -308,7 +308,7 @@ export function TeacherStudentsSection() {
                   >
                     {LANGUAGES.map((lang) => (
                       <option key={lang.id} value={lang.name}>
-                        {lang.name} ({lang.nativeName}) — {lang.regions.join(', ')}
+                        {lang.name} ({lang.nativeName})
                       </option>
                     ))}
                   </select>

@@ -267,13 +267,12 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
         </div>
       </div>
 
-      {/* ── Selected Language & Regional Info Banner ── */}
+      {/* ── Selected Language Info Banner ── */}
       <div className="mb-4 px-4 py-2.5 rounded-2xl border text-xs flex flex-wrap items-center justify-between gap-2 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.06] dark:border-white/[0.06] text-[#737373] dark:text-[#A3A39E]">
         <div className="flex items-center gap-2">
           <span className="font-bold text-[#171717] dark:text-white">
             {selectedLangObj.name} ({selectedLangObj.nativeName})
           </span>
-          <span className="opacity-60">• Regions: {selectedLangObj.regions.join(', ')}</span>
           <span className="opacity-60">• Script: {selectedLangObj.script}</span>
         </div>
         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
@@ -305,7 +304,7 @@ export function LessonView({ lesson, subjectName, subjectNativeName, onBack }: L
               {selectedLangObj.name} ({selectedLangObj.nativeName}) translation is not pre-packaged for this lesson.
             </h3>
             <p className="text-xs sm:text-sm text-amber-700/80 dark:text-amber-400/90 max-w-md mx-auto mt-1">
-              Associated regions: {selectedLangObj.regions.join(', ')}. You can generate an on-the-fly synthesis below.
+              You can generate an on-the-fly synthesis below.
             </p>
           </div>
 
